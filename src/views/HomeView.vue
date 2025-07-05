@@ -2,6 +2,6 @@
 
 <template>
   <main>
-    <p class="text-red-200">Hello world !</p>
+    <p class="text-red-900">Hello world !</p>
   </main>
 </template>
