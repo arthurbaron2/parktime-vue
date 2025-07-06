@@ -9,9 +9,29 @@ import router from './router'
 import { VueQueryPlugin } from '@tanstack/vue-query'
 
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
-import { FaTimes, FaPlus, FaPause, FaStop } from 'oh-vue-icons/icons/fa'
+import {
+  FaTimes,
+  FaPlus,
+  FaPause,
+  FaStop,
+  FaSortAmountDownAlt,
+  FaSortAmountDown,
+  FaLongArrowAltUp,
+} from 'oh-vue-icons/icons/fa'
+import { MdAttractions } from 'oh-vue-icons/icons/md'
+import { GiPartyHat } from 'oh-vue-icons/icons/gi'
 
-addIcons(FaTimes, FaPlus, FaPause, FaStop)
+addIcons(
+  FaTimes,
+  FaPlus,
+  FaPause,
+  FaStop,
+  FaSortAmountDownAlt,
+  FaSortAmountDown,
+  FaLongArrowAltUp,
+  MdAttractions,
+  GiPartyHat,
+)
 
 const app = createApp(App)
 

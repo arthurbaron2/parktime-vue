@@ -97,30 +97,30 @@ const filteredData = computed(() => {
   )
   return sortedValues
 })
+
+const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
 </script>
 
 <template>
-  <main class="bg-slate-800 min-h-screen text-white">
-    <h1>Disneyland Paris Live Data</h1>
-    <div>
-      <h2>Filters</h2>
-      <div>
-        By park :
-        <button @click="filterStore.updateParkIdFilter(DISNEYLAND_PARK_ID)">Disneyland Park</button>
-        <button @click="filterStore.updateParkIdFilter(DISNEY_STUDIOS_ID)">Disney Studios</button>
-        <button @click="filterStore.updateParkIdFilter('ALL')">All Parks</button>
+  <main>
+    <h1 class="text-center font-bold text-lg p-2">Disneyland Paris Live Data</h1>
+    <nav class="p-2">
+      <div class="flex gap-2">
+        <button @click="filterStore.updateParkIdFilter(DISNEYLAND_PARK_ID)" :class="buttonClass">
+          Disneyland Park
+        </button>
+        <button @click="filterStore.updateParkIdFilter(DISNEY_STUDIOS_ID)" :class="buttonClass">
+          Walt Disney Studios
+        </button>
+        <button @click="filterStore.updateParkIdFilter('ALL')" :class="buttonClass">All</button>
       </div>
-      <div>
-        By type :
-        <button @click="filterStore.updateEntityTypeFilter('ATTRACTION')">Attractions</button>
-        <button @click="filterStore.updateEntityTypeFilter('SHOW')">Shows</button>
-      </div>
-      <div>
+
+      <div class="pt-2">
         <label>
           <input
             type="checkbox"
             v-bind:checked="filterStore.showHidden"
-            @click="filterStore.toggleShowHidden"
+            @click="filterStore.toggleShowHidden()"
           />
           Show hidden
         </label>
@@ -128,43 +128,57 @@ const filteredData = computed(() => {
           <input
             type="checkbox"
             v-bind:checked="filterStore.showClosed"
-            @click="filterStore.toggleShowClosed"
+            @click="filterStore.toggleShowClosed()"
           />
           Show closed
         </label>
       </div>
-      <div>
-        Sort by <button @click="filterStore.updateSort">{{ filterStore.sortBy }}</button>
-      </div>
-    </div>
-    <ul class="rounded-t-lg flex px-2 pb-4 gap-0.5 flex-col bg-slate-700">
-      <p class="text-center py-2">Last update : {{ lastUpdateTime }}</p>
-      <li
-        v-for="(data, index) in filteredData"
-        :key="data.id"
-        :class="{
-          'bg-slate-600': data.status === 'OPERATING',
-          'bg-slate-500': data.status === 'DOWN',
-          'bg-slate-400': data.status === 'CLOSED',
-          'rounded-t-md': index === 0,
-          'rounded-b-md': index === filteredData.length - 1,
-        }"
-        class="px-2 py-4 relative flex items-center min-h-15 shadow-md"
-      >
-        <AttractionEntity v-if="data.entityType === 'ATTRACTION'" :liveData="data" />
+    </nav>
+    <div class="rounded-t-lg px-2 pb-4 bg-slate-700">
+      <nav class="flex items-center justify-between">
+        <button @click="filterStore.updateSort" class="text-blue-300 text-left">
+          <span class="text-white text-sm block">Sort by</span>
+          <span
+            >{{ filterStore.sortBy.includes('SINGLE_RIDER') ? 'single rider' : '' }} waiting
+            time</span
+          >
+          <v-icon
+            name="fa-long-arrow-alt-up"
+            :class="{
+              'rotate-45':
+                filterStore.sortBy === 'TIME_DOWN' ||
+                filterStore.sortBy === 'TIME_DOWN_SINGLE_RIDER',
+              'rotate-135':
+                filterStore.sortBy === 'TIME_UP' || filterStore.sortBy === 'TIME_UP_SINGLE_RIDER',
+            }"
+          />
+        </button>
+        <p class="text-right py-2 text-sm">
+          Last update<span class="block text-base">{{ lastUpdateTime }}</span>
+        </p>
+      </nav>
+      <ul class="flex gap-0.5 flex-col">
+        <li v-for="(data, index) in filteredData" :key="data.id">
+          <AttractionEntity
+            v-if="data.entityType === 'ATTRACTION'"
+            :liveData="data"
+            :index
+            :nb-entities="filteredData.length"
+          />
 
-        <span v-if="data.entityType === 'SHOW'">
-          {{ data.name }} -
-          <span v-for="showtime in data.showtimes" :key="showtime.startTime">
-            {{
-              new Date(showtime.startTime).toLocaleTimeString('fr-FR', {
-                timeStyle: 'short',
-              })
-            }}
-            -
+          <span v-if="data.entityType === 'SHOW'">
+            {{ data.name }} -
+            <span v-for="showtime in data.showtimes" :key="showtime.startTime">
+              {{
+                new Date(showtime.startTime).toLocaleTimeString('fr-FR', {
+                  timeStyle: 'short',
+                })
+              }}
+              -
+            </span>
           </span>
-        </span>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </main>
 </template>

@@ -13,18 +13,27 @@ interface Filters {
   showClosed: boolean
 }
 
+const defaultFilters: Filters = {
+  parkIdFilter: 'ALL',
+  entityTypeFilter: 'ATTRACTION',
+  sortBy: 'TIME_DOWN',
+  showHidden: false,
+  showClosed: false,
+}
+
 const getStoredFilters = (): Filters => {
   const storedFilters = localStorage.getItem(LOCAL_STORAGE_KEY)
   if (storedFilters) {
-    return JSON.parse(storedFilters)
+    return {
+      ...defaultFilters,
+      ...JSON.parse(storedFilters),
+    }
   }
-  return {
-    parkIdFilter: 'ALL',
-    entityTypeFilter: 'ATTRACTION',
-    sortBy: 'TIME_DOWN',
-    showHidden: false,
-    showClosed: false,
-  }
+  return defaultFilters
+}
+
+const saveInLocalStorage = (filters: Filters) => {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filters))
 }
 
 export const useFiltersStore = defineStore('filters', {
@@ -40,23 +49,23 @@ export const useFiltersStore = defineStore('filters', {
       } else {
         this.sortBy = 'TIME_DOWN'
       }
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.$state))
+      saveInLocalStorage(this.$state)
     },
     updateParkIdFilter(parkId: string) {
       this.parkIdFilter = parkId
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.$state))
+      saveInLocalStorage(this.$state)
     },
     updateEntityTypeFilter(type: EntityType) {
       this.entityTypeFilter = type
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.$state))
+      saveInLocalStorage(this.$state)
     },
     toggleShowHidden() {
       this.showHidden = !this.showHidden
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.$state))
+      saveInLocalStorage(this.$state)
     },
     toggleShowClosed() {
       this.showClosed = !this.showClosed
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(this.$state))
+      saveInLocalStorage(this.$state)
     },
   },
 })
