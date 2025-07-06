@@ -15,7 +15,7 @@ const DISNEYLAND_PARK_ID = 'dae968d5-630d-4719-8b06-3d107e944401'
 const DISNEYLAND_RESORT_ID = 'e8d0207f-da8a-4048-bec8-117aa946b2c2'
 const DISNEY_STUDIOS_ID = 'ca888437-ebb4-4d50-aed2-d227f7096968'
 
-const { hiddenList, addToHiddenList } = useHiddenList()
+const { hiddenList } = useHiddenList()
 
 const filterStore = useFiltersStore()
 
@@ -72,6 +72,13 @@ const filteredData = computed(() => {
       const bWaitTime = b.queue?.STANDBY?.waitTime || 0
       const aSingleRiderWaitTime = a.queue?.SINGLE_RIDER?.waitTime || aWaitTime
       const bSingleRiderWaitTime = b.queue?.SINGLE_RIDER?.waitTime || bWaitTime
+      const aStatus = a.status
+      const bStatus = b.status
+
+      if (aStatus === 'CLOSED' && bStatus !== 'CLOSED') return 1
+      if (bStatus === 'CLOSED' && aStatus !== 'CLOSED') return -1
+      if (aStatus === 'DOWN' && bStatus !== 'DOWN') return 1
+      if (bStatus === 'DOWN' && aStatus !== 'DOWN') return -1
 
       if (filterStore.sortBy === 'TIME_DOWN') {
         return aWaitTime - bWaitTime
@@ -93,9 +100,8 @@ const filteredData = computed(() => {
 </script>
 
 <template>
-  <main class="bg-slate-800 min-h-screen p-2 text-white">
-    <h1>Disneyland Live Data</h1>
-    <p>Last update : {{ lastUpdateTime }}</p>
+  <main class="bg-slate-800 min-h-screen text-white">
+    <h1>Disneyland Paris Live Data</h1>
     <div>
       <h2>Filters</h2>
       <div>
@@ -131,8 +137,20 @@ const filteredData = computed(() => {
         Sort by <button @click="filterStore.updateSort">{{ filterStore.sortBy }}</button>
       </div>
     </div>
-    <ul class="rounded-md overflow-hidden flex gap-0.5 flex-col">
-      <li v-for="data in filteredData" :key="data.id" class="p-2 bg-slate-600">
+    <ul class="rounded-t-lg flex px-2 pb-4 gap-0.5 flex-col bg-slate-700">
+      <p class="text-center py-2">Last update : {{ lastUpdateTime }}</p>
+      <li
+        v-for="(data, index) in filteredData"
+        :key="data.id"
+        :class="{
+          'bg-slate-600': data.status === 'OPERATING',
+          'bg-slate-500': data.status === 'DOWN',
+          'bg-slate-400': data.status === 'CLOSED',
+          'rounded-t-md': index === 0,
+          'rounded-b-md': index === filteredData.length - 1,
+        }"
+        class="px-2 py-4 relative flex items-center min-h-15 shadow-md"
+      >
         <AttractionEntity v-if="data.entityType === 'ATTRACTION'" :liveData="data" />
 
         <span v-if="data.entityType === 'SHOW'">
@@ -146,7 +164,6 @@ const filteredData = computed(() => {
             -
           </span>
         </span>
-        <button @click="addToHiddenList(data.id)">Hide</button>
       </li>
     </ul>
   </main>
