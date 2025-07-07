@@ -1,0 +1,3 @@
+export const DISNEYLAND_PARK_ID = 'dae968d5-630d-4719-8b06-3d107e944401'
+export const DISNEYLAND_RESORT_ID = 'e8d0207f-da8a-4048-bec8-117aa946b2c2'
+export const DISNEY_STUDIOS_ID = 'ca888437-ebb4-4d50-aed2-d227f7096968'

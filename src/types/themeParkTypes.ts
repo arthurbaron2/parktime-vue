@@ -44,3 +44,26 @@ export interface AttractionLiveData {
   status: Status
   lastUpdated: string
 }
+
+export interface ResortSchedule {
+  id: string
+  name: string
+  entityType: 'DESTINATION'
+  timezone: string
+  parks: ParkSchedule[]
+}
+
+export interface ParkSchedule {
+  id: string
+  name: string
+  entityType: 'PARK'
+  schedule: Schedule[]
+}
+
+export interface Schedule {
+  date: string
+  type: 'EXTRA_HOURS' | 'OPERATING'
+  closingTime: string
+  description?: string
+  openingTime: string
+}

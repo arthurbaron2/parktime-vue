@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useHiddenList } from '@/stores/hiddenList'
+import { useOpeningSchedule } from '@/stores/openingSchedule'
 import type { AttractionLiveData } from '@/types/themeParkTypes'
+import { getDiffInMinutes } from '@/utils/date'
 import { computed } from 'vue'
 
 const props = defineProps<{ liveData: AttractionLiveData; index: number; nbEntities: number }>()
@@ -15,6 +17,7 @@ const getTimerColor = (waitTime?: number) => {
   return 'bg-slate-100 text-slate-800'
 }
 
+const schedule = useOpeningSchedule()
 const hiddenList = useHiddenList()
 const standbyWaitTime = props.liveData.queue.STANDBY?.waitTime
 const singleRiderWaitTime = props.liveData.queue.SINGLE_RIDER?.waitTime
@@ -23,6 +26,12 @@ const status = computed(() => props.liveData.status)
 
 const standbyWaitTimeClass = computed(() => getTimerColor(standbyWaitTime))
 const singleRiderWaitTimeClass = computed(() => getTimerColor(singleRiderWaitTime))
+const parkOpening = computed(() => {
+  return schedule.schedule?.[props.liveData.parkId]
+})
+
+const closeSoon =
+  getDiffInMinutes(new Date(), parkOpening.value?.closingTime) <= 60 && status.value === 'OPERATING'
 </script>
 
 <template>
@@ -44,7 +53,7 @@ const singleRiderWaitTimeClass = computed(() => getTimerColor(singleRiderWaitTim
         :name="props.liveData.status === 'DOWN' ? 'fa-pause' : 'fa-stop'"
         class="text-2xl"
       />
-      <div class="text-2xl">{{ standbyWaitTime }}</div>
+      <p v-else class="text-2xl">{{ standbyWaitTime }}</p>
       <div
         v-if="singleRiderWaitTime"
         class="absolute -top-2 -right-2 rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-sm shadow-slate-500"
@@ -57,6 +66,7 @@ const singleRiderWaitTimeClass = computed(() => getTimerColor(singleRiderWaitTim
     <h2 class="pl-12 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1 font-bold">
       {{ liveData.name }}
     </h2>
+    <p v-if="closeSoon" class="bg-red-400 rounded-md py-0.5 px-1 text-xs mx-1">close soon</p>
     <button @click="hiddenList.addToHiddenList(props.liveData.id)" v-if="!isHidden">
       <v-icon name="fa-times" />
     </button>

@@ -1,36 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useQuery } from '@tanstack/vue-query'
 import { useHiddenList } from '@/stores/hiddenList'
-import type {
-  Destination,
-  LiveData,
-  AttractionLiveData,
-  ShowLiveData,
-} from '@/types/themeParkTypes'
+import type { LiveData, AttractionLiveData, ShowLiveData } from '@/types/themeParkTypes'
 import { useFiltersStore } from '@/stores/filters'
 import AttractionEntity from '@/components/attractionEntity.vue'
-
-const DISNEYLAND_PARK_ID = 'dae968d5-630d-4719-8b06-3d107e944401'
-const DISNEYLAND_RESORT_ID = 'e8d0207f-da8a-4048-bec8-117aa946b2c2'
-const DISNEY_STUDIOS_ID = 'ca888437-ebb4-4d50-aed2-d227f7096968'
+import useLiveData from '@/hooks/useLiveData'
+import { DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID } from '@/utils/constants'
 
 const { hiddenList } = useHiddenList()
 
 const filterStore = useFiltersStore()
 
-const { data, dataUpdatedAt } = useQuery<Destination>({
-  queryKey: ['liveData'],
-  queryFn: async () => {
-    const response = await fetch(
-      `https://api.themeparks.wiki/v1/entity/${DISNEYLAND_RESORT_ID}/live`,
-    )
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
-    }
-    return response.json()
-  },
-})
+const { data, dataUpdatedAt } = useLiveData()
 
 const lastUpdateTime = computed(() => {
   if (!dataUpdatedAt) return
