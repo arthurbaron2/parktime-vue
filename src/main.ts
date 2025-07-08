@@ -33,6 +33,8 @@ addIcons(
   GiPartyHat,
 )
 
+import '../src/registerServiceWorker'
+
 const app = createApp(App)
 
 app.use(createPinia())
