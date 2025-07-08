@@ -11,7 +11,7 @@ const { hiddenList } = useHiddenList()
 
 const filterStore = useFiltersStore()
 
-const { data, dataUpdatedAt } = useLiveData()
+const { data, dataUpdatedAt, error } = useLiveData()
 
 const lastUpdateTime = computed(() => {
   if (!dataUpdatedAt) return
@@ -85,6 +85,7 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
 <template>
   <main>
     <h1 class="text-center font-bold text-lg p-2">Disneyland Paris Live Data</h1>
+    <p v-if="error" class="text-red-500 text-center">Error: {{ error }}</p>
     <nav class="p-2">
       <div class="flex gap-2">
         <button @click="filterStore.updateParkIdFilter(DISNEYLAND_PARK_ID)" :class="buttonClass">

@@ -26,12 +26,16 @@ const status = computed(() => props.liveData.status)
 
 const standbyWaitTimeClass = computed(() => getTimerColor(standbyWaitTime))
 const singleRiderWaitTimeClass = computed(() => getTimerColor(singleRiderWaitTime))
+
 const parkOpening = computed(() => {
   return schedule.schedule?.[props.liveData.parkId]
 })
 
-const closeSoon =
-  getDiffInMinutes(new Date(), parkOpening.value?.closingTime) <= 60 && status.value === 'OPERATING'
+const closeSoon = computed(
+  () =>
+    getDiffInMinutes(new Date(), parkOpening.value?.closingTime) <= 60 &&
+    status.value === 'OPERATING',
+)
 </script>
 
 <template>
