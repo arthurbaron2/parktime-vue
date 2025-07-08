@@ -13,8 +13,9 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/",
   "background_color": "#1D283C",
   "display": "standalone",
-  "theme_color": "#1D283C"
+  "theme_color": "#1D283C",
+  "id": "disneylandparis-live-data"
 }
