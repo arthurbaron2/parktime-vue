@@ -4,3 +4,16 @@ export const getDiffInMinutes = (start?: Date, end?: Date): number => {
   const diffInMs = end.getTime() - start.getTime()
   return Math.floor(diffInMs / (1000 * 60))
 }
+
+export const formatRelativeTime = (date: Date): string => {
+  const now = new Date()
+  const diff = Math.floor((now.getTime() - date.getTime()) / 1000) // in seconds
+  if (diff < 5) return 'just now'
+  if (diff < 60) return `${diff} second${diff === 1 ? '' : 's'} ago`
+  const mins = Math.floor(diff / 60)
+  if (mins < 60) return `${mins} minute${mins === 1 ? '' : 's'} ago`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`
+  const days = Math.floor(hours / 24)
+  return `${days} day${days === 1 ? '' : 's'} ago`
+}

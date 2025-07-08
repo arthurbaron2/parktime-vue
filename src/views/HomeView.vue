@@ -1,24 +1,32 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useHiddenList } from '@/stores/hiddenList'
 import type { LiveData, AttractionLiveData, ShowLiveData } from '@/types/themeParkTypes'
 import { useFiltersStore } from '@/stores/filters'
 import AttractionEntity from '@/components/attractionEntity.vue'
 import useLiveData from '@/hooks/useLiveData'
 import { DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID } from '@/utils/constants'
+import { formatRelativeTime } from '@/utils/date'
 
 const { hiddenList } = useHiddenList()
 
 const filterStore = useFiltersStore()
 
-const { data, dataUpdatedAt, error } = useLiveData()
+const { data, dataUpdatedAt, error, refetch } = useLiveData()
+
+const now = ref(new Date())
+
+onMounted(() => {
+  const interval = setInterval(() => {
+    now.value = new Date()
+  }, 1000)
+  onUnmounted(() => clearInterval(interval))
+})
 
 const lastUpdateTime = computed(() => {
-  if (!dataUpdatedAt) return
-
-  return new Date(dataUpdatedAt.value).toLocaleTimeString('fr-FR', {
-    timeStyle: 'short',
-  })
+  void now.value // force la dépendance réactive
+  if (!dataUpdatedAt?.value) return ''
+  return formatRelativeTime(new Date(dataUpdatedAt.value))
 })
 
 const filterByEntityType = (item: LiveData) => item.entityType === filterStore.entityTypeFilter
@@ -135,9 +143,9 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
             }"
           />
         </button>
-        <p class="text-right py-2 text-sm">
+        <button @click="refetch()" class="text-right py-2 text-sm">
           Last update<span class="block text-base">{{ lastUpdateTime }}</span>
-        </p>
+        </button>
       </nav>
       <ul class="flex gap-0.5 flex-col">
         <li v-for="(data, index) in filteredData" :key="data.id">

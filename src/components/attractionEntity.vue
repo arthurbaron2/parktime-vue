@@ -71,10 +71,20 @@ const closeSoon = computed(
       {{ liveData.name }}
     </h2>
     <p v-if="closeSoon" class="bg-red-400 rounded-md py-0.5 px-1 text-xs mx-1">close soon</p>
-    <button @click="hiddenList.addToHiddenList(props.liveData.id)" v-if="!isHidden">
+    <button
+      @click="hiddenList.addToHiddenList(props.liveData.id)"
+      v-if="!isHidden"
+      aria-label="Hide this attraction"
+      class="focus:outline-none focus:ring-2 rounded-full focus:ring-blue-500"
+    >
       <v-icon name="fa-times" />
     </button>
-    <button @click="hiddenList.removeFromHiddenList(props.liveData.id)" v-if="isHidden">
+    <button
+      @click="hiddenList.removeFromHiddenList(props.liveData.id)"
+      v-if="isHidden"
+      aria-label="Show this attraction"
+      class="focus:outline-none focus:ring-2 rounded-full focus:ring-blue-500"
+    >
       <v-icon name="fa-plus" />
     </button>
   </div>

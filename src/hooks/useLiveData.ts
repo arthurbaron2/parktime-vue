@@ -14,6 +14,11 @@ const useLiveData = () => {
       }
       return response.json()
     },
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchIntervalInBackground: true,
+    refetchInterval: 1000 * 60,
   })
 
   return query
