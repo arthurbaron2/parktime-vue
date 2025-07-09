@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import { useHiddenList } from '@/stores/hiddenList'
 import type { LiveData, AttractionLiveData, ShowLiveData } from '@/types/themeParkTypes'
 import { useFiltersStore } from '@/stores/filters'
@@ -12,7 +12,28 @@ const { hiddenList } = useHiddenList()
 
 const filterStore = useFiltersStore()
 
-const { data, dataUpdatedAt, error, refetch } = useLiveData()
+const { data, dataUpdatedAt, error, refetch, isLoading, isFetching } = useLiveData()
+
+// Loader d'au moins 1s
+const loaderVisible = ref(false)
+let loaderTimeout: ReturnType<typeof setTimeout> | null = null
+
+watch(
+  [isLoading, isFetching],
+  ([loading, fetching]) => {
+    if (loading || fetching) {
+      loaderVisible.value = true
+      if (loaderTimeout) clearTimeout(loaderTimeout)
+    } else {
+      // Affiche le loader au moins 1s
+      if (loaderTimeout) clearTimeout(loaderTimeout)
+      loaderTimeout = setTimeout(() => {
+        loaderVisible.value = false
+      }, 500)
+    }
+  },
+  { immediate: true },
+)
 
 const now = ref(new Date())
 
@@ -147,7 +168,12 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
           Last update<span class="block text-base">{{ lastUpdateTime }}</span>
         </button>
       </nav>
-      <ul class="flex gap-0.5 flex-col">
+      <div v-if="loaderVisible" class="flex justify-center items-center py-8">
+        <span
+          class="loader block w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"
+        />
+      </div>
+      <ul v-else class="flex gap-0.5 flex-col">
         <li v-for="(data, index) in filteredData" :key="data.id">
           <AttractionEntity
             v-if="data.entityType === 'ATTRACTION'"
@@ -172,3 +198,21 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
     </div>
   </main>
 </template>
+
+<style scoped>
+.loader {
+  border-radius: 50%;
+  border-width: 4px;
+  border-style: solid;
+  border-color: #fff #fff #fff transparent;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
