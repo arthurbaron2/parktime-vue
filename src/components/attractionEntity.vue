@@ -8,11 +8,11 @@ import { computed } from 'vue'
 const props = defineProps<{ liveData: AttractionLiveData; index: number; nbEntities: number }>()
 
 const getTimerColor = (waitTime?: number) => {
-  if (!waitTime) return 'bg-slate-100 text-slate-800'
+  if (waitTime === undefined) return 'bg-slate-100 text-slate-800'
 
-  if (waitTime >= 40) return 'bg-rose-400 text-rose-950 '
-  if (waitTime >= 20) return 'bg-amber-400 text-amber-950'
-  if (waitTime >= 5) return 'bg-green-400 text-green-950'
+  if (waitTime >= 45) return 'bg-rose-400 text-rose-950 '
+  if (waitTime >= 25) return 'bg-amber-400 text-amber-950'
+  if (waitTime >= 0) return 'bg-green-400 text-green-950'
 
   return 'bg-slate-100 text-slate-800'
 }
