@@ -29,7 +29,7 @@ watch(
       if (loaderTimeout) clearTimeout(loaderTimeout)
       loaderTimeout = setTimeout(() => {
         loaderVisible.value = false
-      }, 500)
+      }, 200)
     }
   },
   { immediate: true },
@@ -165,13 +165,22 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
           />
         </button>
         <button @click="refetch()" class="text-right py-2 text-sm">
-          Last update<span class="block text-base">{{ lastUpdateTime }}</span>
+          Last update<span class="block text-base">{{ lastUpdateTime || '...' }}</span>
         </button>
       </nav>
-      <div v-if="loaderVisible" class="flex justify-center items-center py-8">
-        <span
-          class="loader block w-12 h-12 border-4 border-t-transparent border-white rounded-full animate-spin"
-        />
+      <div v-if="loaderVisible" class="flex gap-0.5 flex-col">
+        <div
+          v-for="[i, index] in Array.from({ length: 10 }, (_, i) => [i, i])"
+          :key="i"
+          class="flex animate-pulse w-full bg-slate-600 px-3 py-2 relative items-center min-h-15 shadow-md"
+          :class="{
+            'rounded-t-md': index === 0,
+            'rounded-b-md': index === 9,
+          }"
+        >
+          <span class="w-10 h-10 rounded-full bg-slate-500" />
+          <span class="flex-1 h-2 bg-slate-500 rounded-full ml-3" />
+        </div>
       </div>
       <ul v-else class="flex gap-0.5 flex-col">
         <li v-for="(data, index) in filteredData" :key="data.id">
@@ -181,18 +190,6 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
             :index
             :nb-entities="filteredData.length"
           />
-
-          <span v-if="data.entityType === 'SHOW'">
-            {{ data.name }} -
-            <span v-for="showtime in data.showtimes" :key="showtime.startTime">
-              {{
-                new Date(showtime.startTime).toLocaleTimeString('fr-FR', {
-                  timeStyle: 'short',
-                })
-              }}
-              -
-            </span>
-          </span>
         </li>
       </ul>
     </div>

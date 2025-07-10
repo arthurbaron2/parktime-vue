@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { useFiltersStore } from '@/stores/filters'
 import { useHiddenList } from '@/stores/hiddenList'
 import { useOpeningSchedule } from '@/stores/openingSchedule'
-import type { AttractionLiveData } from '@/types/themeParkTypes'
+import type { AttractionLiveData, Status } from '@/types/themeParkTypes'
 import { getDiffInMinutes } from '@/utils/date'
 import { computed } from 'vue'
 
 const props = defineProps<{ liveData: AttractionLiveData; index: number; nbEntities: number }>()
+const filters = useFiltersStore()
 
-const getTimerColor = (waitTime?: number) => {
-  if (waitTime === undefined) return 'bg-slate-100 text-slate-800'
+const getTimerColor = (status: Status, waitTime?: number) => {
+  if (waitTime === undefined || status !== 'OPERATING') return 'bg-slate-100 text-slate-800'
 
   if (waitTime >= 45) return 'bg-rose-400 text-rose-950 '
   if (waitTime >= 25) return 'bg-amber-400 text-amber-950'
@@ -24,8 +26,22 @@ const singleRiderWaitTime = props.liveData.queue.SINGLE_RIDER?.waitTime
 const isHidden = computed(() => hiddenList.hiddenList.includes(props.liveData.id))
 const status = computed(() => props.liveData.status)
 
-const standbyWaitTimeClass = computed(() => getTimerColor(standbyWaitTime))
-const singleRiderWaitTimeClass = computed(() => getTimerColor(singleRiderWaitTime))
+const mainWaitTime = computed(() => {
+  if (filters.sortBy.includes('SINGLE_RIDER')) {
+    return singleRiderWaitTime || standbyWaitTime
+  }
+  return standbyWaitTime
+})
+
+const backupWaitTime = computed(() => {
+  if (filters.sortBy.includes('SINGLE_RIDER') && singleRiderWaitTime) {
+    return standbyWaitTime
+  }
+  return singleRiderWaitTime
+})
+
+const mainWaitTimeClass = computed(() => getTimerColor(status.value, mainWaitTime.value))
+const backupWaitTimeClass = computed(() => getTimerColor(status.value, backupWaitTime.value))
 
 const parkOpening = computed(() => {
   return schedule.schedule?.[props.liveData.parkId]
@@ -33,6 +49,7 @@ const parkOpening = computed(() => {
 
 const closeSoon = computed(
   () =>
+    parkOpening.value &&
     getDiffInMinutes(new Date(), parkOpening.value?.closingTime) <= 60 &&
     status.value === 'OPERATING',
 )
@@ -46,31 +63,31 @@ const closeSoon = computed(
       'rounded-t-md': props.index === 0,
       'rounded-b-md': props.index === props.nbEntities - 1,
     }"
-    class="px-2 py-4 relative flex items-center min-h-15 shadow-md"
+    class="px-3 py-2 relative flex items-center min-h-15 shadow-md"
   >
     <div
-      class="absolute w-10 h-10 rounded-full left-2 top-1/2 -translate-y-1/2 flex items-center justify-center shadow-lg shadow-slate-600"
-      :class="standbyWaitTimeClass"
+      class="size-10 rounded-full relative flex items-center justify-center shadow-lg shadow-slate-600"
+      :class="mainWaitTimeClass"
     >
       <v-icon
         v-if="status !== 'OPERATING'"
         :name="props.liveData.status === 'DOWN' ? 'fa-pause' : 'fa-stop'"
         class="text-2xl"
       />
-      <p v-else class="text-2xl">{{ standbyWaitTime }}</p>
+      <p v-else class="text-2xl">{{ mainWaitTime }}</p>
       <div
-        v-if="singleRiderWaitTime"
+        v-if="backupWaitTime"
         class="absolute -top-2 -right-2 rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-sm shadow-slate-500"
-        :class="singleRiderWaitTimeClass"
+        :class="backupWaitTimeClass"
       >
-        {{ singleRiderWaitTime }}
+        {{ backupWaitTime }}
       </div>
     </div>
 
-    <h2 class="pl-12 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1 font-bold">
+    <h2 class="pl-3 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1 font-bold">
       {{ liveData.name }}
     </h2>
-    <p v-if="closeSoon" class="bg-red-400 rounded-md py-0.5 px-1 text-xs mx-1">close soon</p>
+
     <button
       @click="hiddenList.addToHiddenList(props.liveData.id)"
       v-if="!isHidden"

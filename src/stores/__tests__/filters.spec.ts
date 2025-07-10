@@ -17,6 +17,4 @@ describe('useFiltersStore', () => {
     expect(store.showHidden).toBe(false)
     expect(store.showClosed).toBe(false)
   })
-
-  // Ajouter d'autres tests ici
 })

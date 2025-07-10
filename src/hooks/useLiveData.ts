@@ -18,7 +18,7 @@ const useLiveData = () => {
     refetchOnMount: true,
     refetchOnReconnect: true,
     refetchIntervalInBackground: true,
-    refetchInterval: 1000 * 60,
+    refetchInterval: 1000 * 60 * 5,
   })
 
   return query
