@@ -14,7 +14,7 @@ describe('useFiltersStore', () => {
     expect(store.parkIdFilter).toBe('ALL')
     expect(store.entityTypeFilter).toBe('ATTRACTION')
     expect(store.sortBy).toBe('TIME_DOWN')
-    expect(store.showHidden).toBe(false)
+    expect(store.showFavorites).toBe(false)
     expect(store.showClosed).toBe(false)
   })
 })

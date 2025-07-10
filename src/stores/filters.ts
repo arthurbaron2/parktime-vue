@@ -9,7 +9,7 @@ interface Filters {
   parkIdFilter: string | 'ALL'
   entityTypeFilter: EntityType
   sortBy: SortBy
-  showHidden: boolean
+  showFavorites: boolean
   showClosed: boolean
 }
 
@@ -17,7 +17,7 @@ const defaultFilters: Filters = {
   parkIdFilter: 'ALL',
   entityTypeFilter: 'ATTRACTION',
   sortBy: 'TIME_DOWN',
-  showHidden: false,
+  showFavorites: false,
   showClosed: false,
 }
 
@@ -59,8 +59,8 @@ export const useFiltersStore = defineStore('filters', {
       this.entityTypeFilter = type
       saveInLocalStorage(this.$state)
     },
-    toggleShowHidden() {
-      this.showHidden = !this.showHidden
+    toggleShowFavorites() {
+      this.showFavorites = !this.showFavorites
       saveInLocalStorage(this.$state)
     },
     toggleShowClosed() {

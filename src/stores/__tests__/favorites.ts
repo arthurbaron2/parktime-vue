@@ -1,8 +1,8 @@
 import { setActivePinia, createPinia } from 'pinia'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { useHiddenList } from '../hiddenList'
+import { useFavorites } from '../favorites'
 
-describe('useHiddenList', () => {
+describe('useFavorites', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
@@ -10,8 +10,8 @@ describe('useHiddenList', () => {
   })
 
   it('devrait initialiser la liste comme vide', () => {
-    const store = useHiddenList()
-    expect(store.hiddenList).toEqual([])
+    const store = useFavorites()
+    expect(store.favorites).toEqual([])
   })
 
   // Ajouter d'autres tests ici

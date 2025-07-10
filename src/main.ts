@@ -11,19 +11,18 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 import { OhVueIcon, addIcons } from 'oh-vue-icons'
 import {
   FaTimes,
-  FaPlus,
   FaPause,
   FaStop,
   FaSortAmountDownAlt,
   FaSortAmountDown,
   FaLongArrowAltUp,
+  FaHeart,
 } from 'oh-vue-icons/icons/fa'
 import { MdAttractions } from 'oh-vue-icons/icons/md'
 import { GiPartyHat } from 'oh-vue-icons/icons/gi'
 
 addIcons(
   FaTimes,
-  FaPlus,
   FaPause,
   FaStop,
   FaSortAmountDownAlt,
@@ -31,6 +30,7 @@ addIcons(
   FaLongArrowAltUp,
   MdAttractions,
   GiPartyHat,
+  FaHeart,
 )
 
 import '../src/registerServiceWorker'

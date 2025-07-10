@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useFiltersStore } from '@/stores/filters'
-import { useHiddenList } from '@/stores/hiddenList'
+import { useFavorites } from '@/stores/favorites'
 import { useOpeningSchedule } from '@/stores/openingSchedule'
 import type { AttractionLiveData, Status } from '@/types/themeParkTypes'
 import { getDiffInMinutes } from '@/utils/date'
@@ -20,10 +20,10 @@ const getTimerColor = (status: Status, waitTime?: number) => {
 }
 
 const schedule = useOpeningSchedule()
-const hiddenList = useHiddenList()
+const favoritesStore = useFavorites()
 const standbyWaitTime = props.liveData.queue.STANDBY?.waitTime
 const singleRiderWaitTime = props.liveData.queue.SINGLE_RIDER?.waitTime
-const isHidden = computed(() => hiddenList.hiddenList.includes(props.liveData.id))
+const isFavorite = computed(() => favoritesStore.favorites.includes(props.liveData.id))
 const status = computed(() => props.liveData.status)
 
 const mainWaitTime = computed(() => {
@@ -87,22 +87,15 @@ const closeSoon = computed(
     <h2 class="pl-3 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1 font-bold">
       {{ liveData.name }}
     </h2>
-
-    <button
-      @click="hiddenList.addToHiddenList(props.liveData.id)"
-      v-if="!isHidden"
-      aria-label="Hide this attraction"
-      class="focus:outline-none focus:ring-2 rounded-full focus:ring-blue-500"
-    >
-      <v-icon name="fa-times" />
-    </button>
-    <button
-      @click="hiddenList.removeFromHiddenList(props.liveData.id)"
-      v-if="isHidden"
-      aria-label="Show this attraction"
-      class="focus:outline-none focus:ring-2 rounded-full focus:ring-blue-500"
-    >
-      <v-icon name="fa-plus" />
-    </button>
+    <div class="ml-3">
+      <button
+        @click="favoritesStore.toggleFavorite(props.liveData.id)"
+        aria-label="Add to favorites"
+        class="rounded-lg bg-slate-300 size-10 flex items-center justify-center active:bg-slate-200 transition-colors duration-300"
+        :class="{ 'text-red-400': isFavorite, 'text-slate-600': !isFavorite }"
+      >
+        <v-icon name="fa-heart" class="text-xl" />
+      </button>
+    </div>
   </div>
 </template>

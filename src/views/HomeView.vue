@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
-import { useHiddenList } from '@/stores/hiddenList'
-import type { LiveData, AttractionLiveData, ShowLiveData } from '@/types/themeParkTypes'
+import { useFavorites } from '@/stores/favorites'
+import type { LiveData, AttractionLiveData } from '@/types/themeParkTypes'
 import { useFiltersStore } from '@/stores/filters'
 import AttractionEntity from '@/components/attractionEntity.vue'
 import useLiveData from '@/hooks/useLiveData'
 import { DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID } from '@/utils/constants'
 import { formatRelativeTime } from '@/utils/date'
 
-const { hiddenList } = useHiddenList()
-
+const favoritesStore = useFavorites()
+const isInStandaloneMode = () =>
+  window.matchMedia('(display-mode: standalone)').matches ||
+  window.navigator.standalone ||
+  document.referrer.includes('android-app://')
 const filterStore = useFiltersStore()
 
 const { data, dataUpdatedAt, error, refetch, isLoading, isFetching } = useLiveData()
+
+const displayMode = isInStandaloneMode() ? 'standalone' : 'browser'
 
 // Loader d'au moins 1s
 const loaderVisible = ref(false)
@@ -50,7 +55,7 @@ const lastUpdateTime = computed(() => {
   return formatRelativeTime(new Date(dataUpdatedAt.value))
 })
 
-const filterByEntityType = (item: LiveData) => item.entityType === filterStore.entityTypeFilter
+const filterByEntityType = (item: LiveData) => item.entityType === 'ATTRACTION'
 
 const filterByPark = (item: LiveData) => {
   if (filterStore.parkIdFilter === 'ALL') return true
@@ -60,21 +65,17 @@ const filterByPark = (item: LiveData) => {
 const filterByStatus = (item: LiveData) =>
   filterStore.showClosed ? true : ['OPERATING', 'DOWN'].includes(item.status)
 
-const filterByHidden = (item: LiveData) =>
-  filterStore.showHidden ? true : !hiddenList.includes(item.id)
+const filterByFavorites = (item: LiveData) =>
+  filterStore.showFavorites ? favoritesStore.favorites.includes(item.id) : true
 
 const filteredData = computed(() => {
   if (!data.value) return []
 
   const filteredValues = data.value.liveData
-    .filter(filterByPark)
     .filter(filterByEntityType)
-    .filter(filterByHidden)
+    .filter(filterByPark)
+    .filter(filterByFavorites)
     .filter(filterByStatus)
-
-  if (filterStore.entityTypeFilter === 'SHOW') {
-    return filteredValues as ShowLiveData[]
-  }
 
   const sortedValues = (filteredValues as AttractionLiveData[]).sort(
     (a: AttractionLiveData, b: AttractionLiveData) => {
@@ -113,7 +114,7 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
 
 <template>
   <main>
-    <h1 class="text-center font-bold text-lg p-2">Disneyland Paris Live Data</h1>
+    <h1 class="text-center font-bold text-lg p-2">Waitopia {{ displayMode }}</h1>
     <p v-if="error" class="text-red-500 text-center">Error: {{ error }}</p>
     <nav class="p-2">
       <div class="flex gap-2">
@@ -130,18 +131,18 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
         <label>
           <input
             type="checkbox"
-            v-bind:checked="filterStore.showHidden"
-            @click="filterStore.toggleShowHidden()"
-          />
-          Show hidden
-        </label>
-        <label>
-          <input
-            type="checkbox"
             v-bind:checked="filterStore.showClosed"
             @click="filterStore.toggleShowClosed()"
           />
           Show closed
+        </label>
+        <label v-if="favoritesStore.favorites.length > 0">
+          <input
+            type="checkbox"
+            v-bind:checked="filterStore.showFavorites"
+            @click="filterStore.toggleShowFavorites()"
+          />
+          Show only favorites
         </label>
       </div>
     </nav>
@@ -178,8 +179,9 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
             'rounded-b-md': index === 9,
           }"
         >
-          <span class="w-10 h-10 rounded-full bg-slate-500" />
-          <span class="flex-1 h-2 bg-slate-500 rounded-full ml-3" />
+          <span class="size-10 rounded-full bg-slate-500" />
+          <span class="flex-1 h-4 bg-slate-500 rounded-full ml-3" />
+          <span class="size-10 rounded-lg ml-3 bg-slate-500" />
         </div>
       </div>
       <ul v-else class="flex gap-0.5 flex-col">
@@ -192,24 +194,11 @@ const buttonClass = 'w-1/2 p-2 text-sm rounded-md bg-slate-400 text-white'
           />
         </li>
       </ul>
+      <div class="text-center text-sm text-slate-400 mt-4">
+        <a href="https://themeparks.wiki/api" rel="noopenner noreferrer" target="_blank">
+          Powered by ThemeParks.wiki API
+        </a>
+      </div>
     </div>
   </main>
 </template>
-
-<style scoped>
-.loader {
-  border-radius: 50%;
-  border-width: 4px;
-  border-style: solid;
-  border-color: #fff #fff #fff transparent;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>
