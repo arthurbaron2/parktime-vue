@@ -11,8 +11,10 @@ import { formatRelativeTime } from '@/utils/date'
 const favoritesStore = useFavorites()
 const isInStandaloneMode = () =>
   window.matchMedia('(display-mode: standalone)').matches ||
-  window.navigator.standalone ||
+  // @ts-expect-error: standalone is only present on iOS Safari
+  window.navigator.standalone === true ||
   document.referrer.includes('android-app://')
+
 const filterStore = useFiltersStore()
 
 const { data, dataUpdatedAt, error, refetch, isLoading, isFetching } = useLiveData()
