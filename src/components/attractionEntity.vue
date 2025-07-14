@@ -6,7 +6,7 @@ import type { AttractionLiveData, Status } from '@/types/themeParkTypes'
 import { getDiffInMinutes } from '@/utils/date'
 import { computed } from 'vue'
 
-const props = defineProps<{ liveData: AttractionLiveData; index: number; nbEntities: number }>()
+const props = defineProps<{ liveData: AttractionLiveData }>()
 const filters = useFiltersStore()
 
 const getTimerColor = (status: Status, waitTime?: number) => {
@@ -58,15 +58,14 @@ const closeSoon = computed(
 <template>
   <div
     :class="{
-      'bg-slate-600': props.liveData.status === 'OPERATING',
-      'bg-slate-500': props.liveData.status === 'DOWN' || props.liveData.status === 'CLOSED',
-      'rounded-t-md': props.index === 0,
-      'rounded-b-md': props.index === props.nbEntities - 1,
+      'bg-slate-300/30 shadow-slate-700/50': props.liveData.status === 'OPERATING',
+      'bg-slate-200/30 shadow-slate-600/50':
+        props.liveData.status === 'DOWN' || props.liveData.status === 'CLOSED',
     }"
-    class="px-3 py-2 relative flex items-center min-h-15 shadow-md"
+    class="px-3 py-2 relative flex items-center min-h-15 rounded-xl"
   >
     <div
-      class="size-10 rounded-full relative flex items-center justify-center shadow-lg shadow-slate-600"
+      class="size-10 rounded-full relative flex items-center justify-center shadow-md shadow-slate-700/50"
       :class="mainWaitTimeClass"
     >
       <v-icon
@@ -77,7 +76,7 @@ const closeSoon = computed(
       <p v-else class="text-2xl">{{ mainWaitTime }}</p>
       <div
         v-if="backupWaitTime"
-        class="absolute -top-2 -right-2 rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-sm shadow-slate-500"
+        class="absolute -top-2 -right-2 rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-sm shadow-slate-700/50"
         :class="backupWaitTimeClass"
       >
         {{ backupWaitTime }}
@@ -91,7 +90,7 @@ const closeSoon = computed(
       <button
         @click="favoritesStore.toggleFavorite(props.liveData.id)"
         aria-label="Add to favorites"
-        class="rounded-lg bg-slate-300 size-10 flex items-center justify-center active:bg-slate-200 transition-colors duration-300"
+        class="rounded-xl bg-slate-200 size-10 flex items-center justify-center active:bg-slate-100 transition-colors duration-300"
         :class="{ 'text-red-400': isFavorite, 'text-slate-600': !isFavorite }"
       >
         <v-icon name="fa-heart" class="text-xl" />
