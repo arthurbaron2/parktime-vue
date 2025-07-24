@@ -7,7 +7,7 @@ const filterStore = useFiltersStore()
 </script>
 
 <template>
-  <div class="flex gap-2 pt-4">
+  <div class="flex gap-2 pb-6 pt-4">
     <button
       @click="filterStore.updateParkIdFilter(DISNEYLAND_PARK_ID)"
       :class="

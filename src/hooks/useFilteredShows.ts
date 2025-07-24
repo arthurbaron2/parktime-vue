@@ -1,5 +1,6 @@
 import useLiveData from '@/hooks/useLiveData'
 import { useFiltersStore } from '@/stores/filters'
+import { useFavorites } from '@/stores/favorites'
 import type { LiveData, ShowLiveData } from '@/types/themeParkTypes'
 import { computed } from 'vue'
 import { getDiffInMinutes } from '@/utils/date'
@@ -9,6 +10,7 @@ const removedShows: string[] = ['4e9e9271-1962-4fad-9f73-9370954018cf']
 const useFilteredShows = () => {
   const { data } = useLiveData()
   const filterStore = useFiltersStore()
+  const favoritesStore = useFavorites()
 
   const filterByEntityType = (item: LiveData) => item.entityType === 'SHOW'
   const filterByPark = (item: LiveData) => {
@@ -18,7 +20,9 @@ const useFilteredShows = () => {
 
   const filterByRemovedShows = (item: ShowLiveData) => !removedShows.includes(item.id)
 
-  const filterByNextTwoHours = (item: ShowLiveData) => {
+  const filterByFavorites = (item: ShowLiveData) => favoritesStore.favorites.includes(item.id)
+
+  const filterByNextHours = (item: ShowLiveData) => {
     if (!item.showtimes || item.showtimes.length === 0) return false
     const now = new Date()
     return item.showtimes.some((showtime) => {
@@ -28,16 +32,19 @@ const useFilteredShows = () => {
     })
   }
 
-  const filteredShows = computed<{ nextShows: ShowLiveData[] }>(() => {
-    if (!data.value) return { nextShows: [] }
+  const filteredShows = computed<{ nextShows: ShowLiveData[]; favorites: ShowLiveData[] }>(() => {
+    if (!data.value) return { nextShows: [], favorites: [] }
 
-    return {
-      nextShows: data.value.liveData
-        .filter(filterByEntityType)
-        .filter(filterByPark)
-        .filter(filterByRemovedShows)
-        .filter(filterByNextTwoHours),
-    }
+    const allShows = data.value.liveData
+      .filter(filterByEntityType)
+      .filter(filterByPark)
+      .filter(filterByRemovedShows)
+      .filter(filterByNextHours)
+
+    const favorites = allShows.filter(filterByFavorites)
+    const noFavorites = allShows.filter((show) => !favorites.find((f) => f.id === show.id))
+
+    return { nextShows: noFavorites, favorites }
   })
 
   return filteredShows

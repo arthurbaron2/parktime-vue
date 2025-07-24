@@ -17,6 +17,8 @@ import {
   FaSortAmountDown,
   FaLongArrowAltUp,
   FaHeart,
+  FaCog,
+  FaHome,
 } from 'oh-vue-icons/icons/fa'
 import { MdAttractions } from 'oh-vue-icons/icons/md'
 import { GiPartyHat } from 'oh-vue-icons/icons/gi'
@@ -31,6 +33,8 @@ addIcons(
   MdAttractions,
   GiPartyHat,
   FaHeart,
+  FaCog,
+  FaHome,
 )
 
 import '../src/registerServiceWorker'

@@ -4,19 +4,15 @@ import { getDiffInMinutes } from '@/utils/date'
 import { computed } from 'vue'
 import { useFiltersStore } from '@/stores/filters'
 import ShowDate from '@/components/ShowDate.vue'
-import { getParkLabel } from '@/utils/park'
-import { DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID } from '@/utils/constants'
-import {
-  disneylandParkRadient,
-  disneylandStudiosRadient,
-  allParksRadient,
-} from '@/styles/homeView.styles'
+import { useFavorites } from '@/stores/favorites'
 
 const props = defineProps<{
   show: ShowLiveData
 }>()
 
 const filterStore = useFiltersStore()
+const favoritesStore = useFavorites()
+const isFavorite = computed(() => favoritesStore.favorites.includes(props.show.id))
 
 const showtimes = computed(() => {
   const now = new Date()
@@ -46,17 +42,16 @@ const hasShowtimesAfterFilter = computed(() => {
       <h2 class="font-bold w-full overflow-hidden overflow-ellipsis whitespace-nowrap">
         {{ show.name }}
       </h2>
-      <p
-        v-if="filterStore.parkIdFilter === 'ALL'"
-        class="text-xs text-slate-100 text-shadow-md text-shadow-slate-900/20 shadow-slate-900/20 shadow-md rounded-full whitespace-nowrap ml-2 px-2 py-1"
-        :class="{
-          [disneylandParkRadient]: show.parkId === DISNEYLAND_PARK_ID,
-          [disneylandStudiosRadient]: show.parkId === DISNEY_STUDIOS_ID,
-          [allParksRadient]: show.parkId === 'ALL',
-        }"
-      >
-        {{ getParkLabel(show.parkId) }}
-      </p>
+      <div class="ml-3">
+        <button
+          @click="favoritesStore.toggleFavorite(show.id)"
+          aria-label="Ajouter aux favoris"
+          class="rounded-xl bg-slate-200 size-10 flex items-center justify-center active:bg-slate-100 transition-colors duration-300"
+          :class="{ 'text-red-400': isFavorite, 'text-slate-600': !isFavorite }"
+        >
+          <v-icon name="fa-heart" />
+        </button>
+      </div>
     </div>
     <div class="flex items-center overflow-scroll rounded-md">
       <ul class="flex gap-2">

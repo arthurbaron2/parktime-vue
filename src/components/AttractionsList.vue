@@ -10,6 +10,10 @@ const filterStore = useFiltersStore()
 const sortedAttractions = useFilteredAttractions()
 const haveFavorites = computed(() => sortedAttractions.value.favorites.length > 0)
 const { loaderVisible } = useLoader()
+
+const haveAttractions = computed(
+  () => sortedAttractions.value.attractions.length > 0 && !filterStore.showFavorites,
+)
 </script>
 
 <template>
@@ -22,13 +26,10 @@ const { loaderVisible } = useLoader()
         <AttractionEntity :liveData="data" />
       </li>
     </ul>
-    <span
-      v-if="haveFavorites && !filterStore.showFavorites"
-      class="flex items-center justify-center"
-    >
+    <span v-if="haveFavorites && haveAttractions" class="flex items-center justify-center">
       <span class="h-2 bg-slate-100/90 rounded-full w-10 my-4" />
     </span>
-    <ul v-if="!filterStore.showFavorites" class="flex gap-2 flex-col">
+    <ul v-if="haveAttractions" class="flex gap-2 flex-col">
       <li v-for="data in sortedAttractions.attractions" :key="data.id">
         <AttractionEntity :liveData="data" />
       </li>
