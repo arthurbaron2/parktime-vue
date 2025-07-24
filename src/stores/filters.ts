@@ -1,7 +1,7 @@
 import type { EntityType } from '@/types/themeParkTypes'
 import { defineStore } from 'pinia'
 
-type SortBy = 'TIME_DOWN' | 'TIME_UP' | 'TIME_DOWN_SINGLE_RIDER' | 'TIME_UP_SINGLE_RIDER'
+export type SortBy = 'TIME_DOWN' | 'TIME_UP' | 'TIME_DOWN_SINGLE_RIDER' | 'TIME_UP_SINGLE_RIDER'
 
 const LOCAL_STORAGE_KEY = 'dream-park-filters'
 
@@ -11,6 +11,8 @@ interface Filters {
   sortBy: SortBy
   showFavorites: boolean
   showClosed: boolean
+  showNextShows: boolean
+  showtimeDiff: number
 }
 
 const defaultFilters: Filters = {
@@ -19,6 +21,8 @@ const defaultFilters: Filters = {
   sortBy: 'TIME_DOWN',
   showFavorites: false,
   showClosed: false,
+  showNextShows: true,
+  showtimeDiff: 900,
 }
 
 const getStoredFilters = (): Filters => {
@@ -65,6 +69,14 @@ export const useFiltersStore = defineStore('filters', {
     },
     toggleShowClosed() {
       this.showClosed = !this.showClosed
+      saveInLocalStorage(this.$state)
+    },
+    toggleShowNextShows() {
+      this.showNextShows = !this.showNextShows
+      saveInLocalStorage(this.$state)
+    },
+    updateShowtimeDiff(diff: number) {
+      this.showtimeDiff = diff
       saveInLocalStorage(this.$state)
     },
   },
