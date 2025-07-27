@@ -3,8 +3,8 @@ import { useFiltersStore } from '@/stores/filters'
 import useFilteredAttractions from '@/hooks/useFilteredAttractions'
 import useLoader from '@/hooks/useLoader'
 import { computed } from 'vue'
-import AttractionSkeleton from '@/components/AttractionSkeleton.vue'
-import AttractionEntity from '@/components/AttractionEntity.vue'
+import AttractionSkeleton from '@/components/attractions/AttractionSkeleton.vue'
+import AttractionEntity from '@/components/attractions/AttractionEntity.vue'
 
 const filterStore = useFiltersStore()
 const sortedAttractions = useFilteredAttractions()

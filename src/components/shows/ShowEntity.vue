@@ -3,7 +3,7 @@ import type { ShowLiveData } from '@/types/themeParkTypes'
 import { getDiffInMinutes } from '@/utils/date'
 import { computed } from 'vue'
 import { useFiltersStore } from '@/stores/filters'
-import ShowDate from '@/components/ShowDate.vue'
+import ShowDate from '@/components/shows/ShowDate.vue'
 import { useFavorites } from '@/stores/favorites'
 
 const props = defineProps<{

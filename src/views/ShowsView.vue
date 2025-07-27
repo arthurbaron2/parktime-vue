@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ParkFilter from '@/components/ParkFilter.vue'
-import ShowsBoard from '@/components/ShowsBoard.vue'
+import ShowsBoard from '@/components/shows/ShowsBoard.vue'
 </script>
 
 <template>

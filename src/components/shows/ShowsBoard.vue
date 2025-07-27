@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import useLoader from '@/hooks/useLoader'
 import useFilteredShows from '@/hooks/useFilteredShows'
-import ShowEntity from '@/components/ShowEntity.vue'
-import ShowSkeleton from '@/components/ShowSkeleton.vue'
+import ShowEntity from '@/components/shows/ShowEntity.vue'
+import ShowSkeleton from '@/components/shows/ShowSkeleton.vue'
 import { useFiltersStore } from '@/stores/filters'
 import { computed } from 'vue'
 

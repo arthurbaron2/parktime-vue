@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ParkFilter from '@/components/ParkFilter.vue'
-import AttractionsBoard from '@/components/AttractionsBoard.vue'
+import AttractionsBoard from '@/components/attractions/AttractionsBoard.vue'
 </script>
 
 <template>

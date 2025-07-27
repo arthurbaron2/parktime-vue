@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useFiltersStore } from '@/stores/filters'
 import ParkFilter from '@/components/ParkFilter.vue'
-import AttractionsBoard from '@/components/AttractionsBoard.vue'
-import ShowsBoard from '@/components/ShowsBoard.vue'
+import AttractionsBoard from '@/components/attractions/AttractionsBoard.vue'
+import ShowsBoard from '@/components/shows/ShowsBoard.vue'
 
 const filterStore = useFiltersStore()
 </script>

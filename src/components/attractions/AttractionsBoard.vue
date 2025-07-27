@@ -2,7 +2,7 @@
 import { useFiltersStore } from '@/stores/filters'
 import useLiveData from '@/hooks/useLiveData'
 import useLoader from '@/hooks/useLoader'
-import AttractionsList from '@/components/AttractionsList.vue'
+import AttractionsList from '@/components/attractions/AttractionsList.vue'
 
 const filterStore = useFiltersStore()
 const { refetch } = useLiveData()
