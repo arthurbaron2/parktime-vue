@@ -3,7 +3,7 @@ import { RouterView } from 'vue-router'
 import { useFiltersStore } from '@/stores/filters'
 import useLiveData from '@/hooks/useLiveData'
 import { DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID } from '@/utils/constants'
-import NavigationMenu from '@/components/navigationMenu.vue'
+import NavigationMenu from '@/components/NavigationMenu.vue'
 
 import {
   disneylandParkRadient,

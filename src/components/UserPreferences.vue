@@ -4,6 +4,12 @@ import { useFavorites } from '@/stores/favorites'
 
 const filterStore = useFiltersStore()
 const favoritesStore = useFavorites()
+
+const handleShowtimeDiffChange = (event: Event) => {
+  if (event.target instanceof HTMLSelectElement) {
+    filterStore.updateShowtimeDiff(Number(event.target.value))
+  }
+}
 </script>
 
 <template>
@@ -40,7 +46,7 @@ const favoritesStore = useFavorites()
       <select
         name="showtime-diff"
         v-model="filterStore.showtimeDiff"
-        @change="filterStore.updateShowtimeDiff(Number($event.target?.value ?? 0))"
+        @change="handleShowtimeDiffChange"
       >
         <option value="15">15 minutes</option>
         <option value="30">30 minutes</option>
