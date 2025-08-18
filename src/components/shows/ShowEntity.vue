@@ -8,6 +8,7 @@ import { useFavorites } from '@/stores/favorites'
 
 const props = defineProps<{
   show: ShowLiveData
+  showAllNextShows?: boolean
 }>()
 
 const filterStore = useFiltersStore()
@@ -20,12 +21,13 @@ const showtimes = computed(() => {
     .filter((showtime) => {
       const start = new Date(showtime.startTime)
       const diff = getDiffInMinutes(now, start)
-      return diff >= 0 && diff <= filterStore.showtimeDiff
+      return diff >= 0 && (props.showAllNextShows ? true : diff <= filterStore.showtimeDiff)
     })
     .map((showtime) => showtime.startTime)
 })
 
 const hasShowtimesAfterFilter = computed(() => {
+  if (props.showAllNextShows) return false
   const now = new Date()
   return props.show.showtimes.some((showtime) => {
     const start = new Date(showtime.startTime)

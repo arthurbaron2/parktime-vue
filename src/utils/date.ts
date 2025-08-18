@@ -17,3 +17,18 @@ export const formatRelativeTime = (date: Date): string => {
   const days = Math.floor(hours / 24)
   return `${days} day${days === 1 ? '' : 's'} ago`
 }
+
+export const formatHoursFromMinutes = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60)
+  const remainingMinutes = minutes % 60
+
+  if (hours === 0) {
+    return `${remainingMinutes} minutes`
+  }
+
+  if (remainingMinutes === 0) {
+    return `${hours}h`
+  }
+
+  return `${hours}h${remainingMinutes.toString().padStart(2, '0')}`
+}

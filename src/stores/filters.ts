@@ -22,7 +22,7 @@ const defaultFilters: Filters = {
   showFavorites: false,
   showClosed: false,
   showNextShows: true,
-  showtimeDiff: 900,
+  showtimeDiff: 120,
 }
 
 const getStoredFilters = (): Filters => {

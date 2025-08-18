@@ -10,7 +10,7 @@ const isActive = (path: string) => {
 
 <template>
   <div
-    class="flex gap-8 fixed items-center text-xs justify-center py-3 -bottom-0.5 left-0 right-0 bg-slate-900/50 backdrop-blur-sm"
+    class="flex gap-8 justify-between fixed items-center text-xs px-10 pt-3 pb-5 -bottom-0.5 left-0 right-0 bg-slate-900/50 backdrop-blur-sm"
   >
     <router-link
       to="/"

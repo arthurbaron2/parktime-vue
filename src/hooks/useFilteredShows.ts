@@ -7,7 +7,7 @@ import { getDiffInMinutes } from '@/utils/date'
 
 const removedShows: string[] = ['4e9e9271-1962-4fad-9f73-9370954018cf']
 
-const useFilteredShows = () => {
+const useFilteredShows = ({ showAllNextShows = false }: { showAllNextShows?: boolean } = {}) => {
   const { data } = useLiveData()
   const filterStore = useFiltersStore()
   const favoritesStore = useFavorites()
@@ -24,11 +24,13 @@ const useFilteredShows = () => {
 
   const filterByNextHours = (item: ShowLiveData) => {
     if (!item.showtimes || item.showtimes.length === 0) return false
+
     const now = new Date()
+
     return item.showtimes.some((showtime) => {
       const start = new Date(showtime.startTime)
       const diff = getDiffInMinutes(now, start)
-      return diff >= 0 && diff <= filterStore.showtimeDiff
+      return diff >= 0 && (showAllNextShows ? true : diff <= filterStore.showtimeDiff)
     })
   }
 

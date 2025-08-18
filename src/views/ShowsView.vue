@@ -5,5 +5,5 @@ import ShowsBoard from '@/components/shows/ShowsBoard.vue'
 
 <template>
   <ParkFilter />
-  <ShowsBoard />
+  <ShowsBoard :show-all-next-shows="true" />
 </template>
