@@ -3,8 +3,6 @@ import { useFavorites } from '@/stores/favorites'
 import type { AttractionLiveData } from '@/types/themeParkTypes'
 import { computed } from 'vue'
 import useWaitTime from '@/hooks/useWaitTime'
-import { useOpeningSchedule } from '@/stores/openingSchedule'
-import { getDiffInMinutes } from '@/utils/date'
 
 const props = defineProps<{ liveData: AttractionLiveData }>()
 
@@ -12,17 +10,8 @@ const favoritesStore = useFavorites()
 const isFavorite = computed(() => favoritesStore.favorites.includes(props.liveData.id))
 const status = computed(() => props.liveData.status)
 
-const openingSchedule = useOpeningSchedule()
-
 const { mainWaitTime, backupWaitTime, mainWaitTimeClass, backupWaitTimeClass } = useWaitTime({
   liveData: props.liveData,
-})
-
-const isCloseSoon = computed(() => {
-  const now = new Date()
-  const diff = getDiffInMinutes(now, openingSchedule.schedule?.[props.liveData.parkId]?.closingTime)
-
-  return diff <= 60 && diff >= 0
 })
 </script>
 
@@ -57,9 +46,7 @@ const isCloseSoon = computed(() => {
     <h2 class="pl-3 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1 font-bold">
       {{ liveData.name }}
     </h2>
-    <span v-if="isCloseSoon" class="text-xs bg-slate-200 py-1 px-2 rounded-full text-orange-700">
-      close soon
-    </span>
+
     <div class="ml-3">
       <button
         @click="favoritesStore.toggleFavorite(props.liveData.id)"

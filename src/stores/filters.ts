@@ -5,7 +5,7 @@ export type SortBy = 'TIME_DOWN' | 'TIME_UP' | 'TIME_DOWN_SINGLE_RIDER' | 'TIME_
 
 const LOCAL_STORAGE_KEY = 'dream-park-filters'
 
-interface Filters {
+export interface Filters {
   parkIdFilter: string | 'ALL'
   entityTypeFilter: EntityType
   sortBy: SortBy
@@ -13,6 +13,8 @@ interface Filters {
   showClosed: boolean
   showNextShows: boolean
   showtimeDiff: number
+  showClosingSoon: boolean
+  showClosingSoonDiff: number
 }
 
 const defaultFilters: Filters = {
@@ -23,6 +25,8 @@ const defaultFilters: Filters = {
   showClosed: false,
   showNextShows: true,
   showtimeDiff: 120,
+  showClosingSoon: false,
+  showClosingSoonDiff: 60,
 }
 
 const getStoredFilters = (): Filters => {
@@ -55,28 +59,15 @@ export const useFiltersStore = defineStore('filters', {
       }
       saveInLocalStorage(this.$state)
     },
+    updateSettings(settings: Filters) {
+      this.$state = {
+        ...this.$state,
+        ...settings,
+      }
+      saveInLocalStorage(this.$state)
+    },
     updateParkIdFilter(parkId: string) {
       this.parkIdFilter = parkId
-      saveInLocalStorage(this.$state)
-    },
-    updateEntityTypeFilter(type: EntityType) {
-      this.entityTypeFilter = type
-      saveInLocalStorage(this.$state)
-    },
-    toggleShowFavorites() {
-      this.showFavorites = !this.showFavorites
-      saveInLocalStorage(this.$state)
-    },
-    toggleShowClosed() {
-      this.showClosed = !this.showClosed
-      saveInLocalStorage(this.$state)
-    },
-    toggleShowNextShows() {
-      this.showNextShows = !this.showNextShows
-      saveInLocalStorage(this.$state)
-    },
-    updateShowtimeDiff(diff: number) {
-      this.showtimeDiff = diff
       saveInLocalStorage(this.$state)
     },
   },

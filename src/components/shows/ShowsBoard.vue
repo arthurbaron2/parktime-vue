@@ -30,6 +30,12 @@ const haveShows = computed(
     !props.showOnlyFavorites,
 )
 
+console.log({
+  length: filteredShows.value.nextShows.length,
+  showFavorites: filterStore.showFavorites,
+  showOnlyFavorites: props.showOnlyFavorites,
+})
+
 const isEmpty = computed(() => props.showOnlyFavorites && !haveFavorites.value && !haveShows.value)
 </script>
 
@@ -61,7 +67,8 @@ const isEmpty = computed(() => props.showOnlyFavorites && !haveFavorites.value &
       </div>
     </div>
     <p v-else class="text-center pt-4 text-white font-bold">
-      There is no shows in the next {{ showtimeDiff }}
+      <span v-if="showAllNextShows">There is no shows for the rest of the day</span>
+      <span v-else>There is no shows in the next {{ showtimeDiff }}</span>
     </p>
   </div>
 </template>

@@ -1,62 +1,60 @@
 <script setup lang="ts">
-import { useFiltersStore } from '@/stores/filters'
-import { useFavorites } from '@/stores/favorites'
+import { ref, onMounted } from 'vue'
+import { useFiltersStore, type Filters } from '@/stores/filters'
+import type { Vueform } from '@vueform/vueform'
+
+const form$ = ref<Vueform | null>(null)
+
+onMounted(() => {
+  form$.value?.on('change', (values: Filters) => {
+    filterStore.updateSettings(values)
+  })
+})
 
 const filterStore = useFiltersStore()
-const favoritesStore = useFavorites()
-
-const handleShowtimeDiffChange = (event: Event) => {
-  if (event.target instanceof HTMLSelectElement) {
-    filterStore.updateShowtimeDiff(Number(event.target.value))
-  }
-}
 </script>
 
 <template>
-  <div class="py-4 flex gap-2 flex-col">
-    <label>
-      <input
-        name="show-closed"
-        type="checkbox"
-        :checked="filterStore.showClosed"
-        @click="filterStore.toggleShowClosed()"
+  <div class="flex gap-4 flex-col bg-slate-700/50 rounded-xl py-4 px-2">
+    <h2 class="text-md font-bold text-center">Preferences</h2>
+    <Vueform ref="form$" :default="filterStore.$state">
+      <CheckboxElement name="showClosed" text="Show closed attractions" />
+      <CheckboxElement name="showFavorites" text="Show only favorites rides and shows" />
+      <CheckboxElement name="showNextShows" text="Show next shows on home screen" />
+      <SelectElement
+        name="showtimeDiff"
+        :disabled="!filterStore.showNextShows"
+        :native="true"
+        :items="{
+          15: '15 minutes',
+          30: '30 minutes',
+          45: '45 minutes',
+          60: '1 hour',
+          90: '1 hour 30',
+          120: '2 hours',
+          180: '3 hours',
+          240: '4 hours',
+        }"
+        label="Show next shows in"
       />
-      Show closed
-    </label>
-    <label v-if="favoritesStore.favorites.length > 0">
-      <input
-        name="show-favorites"
-        type="checkbox"
-        :checked="filterStore.showFavorites"
-        @click="filterStore.toggleShowFavorites()"
+      <CheckboxElement name="showClosingSoon" text="Show closing soon warning on home screen" />
+      <SelectElement
+        name="showClosingSoonDiff"
+        :native="true"
+        :disabled="!filterStore.showClosingSoon"
+        :items="{
+          30: '30 minutes',
+          45: '45 minutes',
+          60: '1 hour',
+          90: '1 hour 30',
+          120: '2 hours',
+          180: '3 hours',
+          240: '4 hours',
+        }"
+        label="Show closing soon in"
       />
-      Show only favorites
-    </label>
-    <label>
-      <input
-        name="show-next-shows"
-        type="checkbox"
-        :checked="filterStore.showNextShows"
-        @click="filterStore.toggleShowNextShows()"
-      />
-      Show next shows
-    </label>
-    <label>
-      Show next shows in
-      <select
-        name="showtime-diff"
-        v-model="filterStore.showtimeDiff"
-        @change="handleShowtimeDiffChange"
-      >
-        <option value="15">15 minutes</option>
-        <option value="30">30 minutes</option>
-        <option value="45">45 minutes</option>
-        <option value="60">1 hour</option>
-        <option value="90">1 hour 30</option>
-        <option value="120">2 hours</option>
-        <option value="180">3 hours</option>
-        <option value="240">4 hours</option>
-      </select>
-    </label>
+    </Vueform>
   </div>
 </template>
+
+<style src="@vueform/toggle/themes/default.css"></style>

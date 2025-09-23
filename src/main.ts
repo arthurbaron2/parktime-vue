@@ -19,6 +19,7 @@ import {
   FaHeart,
   FaCog,
   FaHome,
+  FaClock,
 } from 'oh-vue-icons/icons/fa'
 import { MdAttractions } from 'oh-vue-icons/icons/md'
 import { GiPartyHat } from 'oh-vue-icons/icons/gi'
@@ -35,6 +36,7 @@ addIcons(
   FaHeart,
   FaCog,
   FaHome,
+  FaClock,
 )
 
 import '../src/registerServiceWorker'
@@ -45,5 +47,15 @@ app.use(createPinia())
 app.use(router)
 app.use(VueQueryPlugin)
 app.component('v-icon', OhVueIcon)
+
+// Charger Vueform de manière asynchrone
+async function loadVueform() {
+  const { default: Vueform } = await import('@vueform/vueform')
+  const vueformConfig = await import('./../vueform.config')
+  app.use(Vueform, vueformConfig.default)
+}
+
+// Charger Vueform après le montage de l'app
+loadVueform()
 
 app.mount('#app')
