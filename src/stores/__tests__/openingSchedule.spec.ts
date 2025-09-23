@@ -88,20 +88,19 @@ describe('useOpeningSchedule', () => {
     const store = useOpeningSchedule()
     expect(store.schedule).toBeDefined()
     if (!store.schedule) throw new Error('store.schedule is undefined')
-    const schedule = store.schedule as unknown as Record<
-      string,
-      { openingTime: Date; closingTime: Date }
-    >
-    // Disneyland Park
-    expect(schedule[DISNEYLAND_PARK_ID]?.openingTime).toBeInstanceOf(Date)
-    expect(schedule[DISNEYLAND_PARK_ID]?.closingTime).toBeInstanceOf(Date)
-    expect(schedule[DISNEYLAND_PARK_ID]?.openingTime.toISOString()).toBe('2024-01-01T07:00:00.000Z')
-    expect(schedule[DISNEYLAND_PARK_ID]?.closingTime.toISOString()).toBe('2024-01-01T21:00:00.000Z')
-    // Walt Disney Studios
-    expect(schedule[DISNEY_STUDIOS_ID]?.openingTime).toBeInstanceOf(Date)
-    expect(schedule[DISNEY_STUDIOS_ID]?.closingTime).toBeInstanceOf(Date)
-    expect(schedule[DISNEY_STUDIOS_ID]?.openingTime.toISOString()).toBe('2024-01-01T08:00:00.000Z')
-    expect(schedule[DISNEY_STUDIOS_ID]?.closingTime.toISOString()).toBe('2024-01-01T20:00:00.000Z')
+    const schedule = store.schedule
+
+    expect(schedule.length).toBe(2)
+    expect(schedule[0].parkId).toBe(DISNEYLAND_PARK_ID)
+    expect(schedule[1].parkId).toBe(DISNEY_STUDIOS_ID)
+    expect(schedule[0].openingTime).toBeInstanceOf(Date)
+    expect(schedule[0].closingTime).toBeInstanceOf(Date)
+    expect(schedule[0].openingTime.toISOString()).toBe('2024-01-01T07:00:00.000Z')
+    expect(schedule[0].closingTime.toISOString()).toBe('2024-01-01T21:00:00.000Z')
+    expect(schedule[1].openingTime).toBeInstanceOf(Date)
+    expect(schedule[1].closingTime).toBeInstanceOf(Date)
+    expect(schedule[1].openingTime.toISOString()).toBe('2024-01-01T08:00:00.000Z')
+    expect(schedule[1].closingTime.toISOString()).toBe('2024-01-01T20:00:00.000Z')
   })
 
   it('retourne undefined si data.value est undefined', () => {
