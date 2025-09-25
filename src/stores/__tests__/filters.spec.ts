@@ -11,7 +11,6 @@ describe('useFiltersStore', () => {
 
   it('devrait initialiser avec les valeurs par défaut', () => {
     const store = useFiltersStore()
-    expect(store.parkIdFilter).toBe('ALL')
     expect(store.entityTypeFilter).toBe('ATTRACTION')
     expect(store.sortBy).toBe('TIME_DOWN')
     expect(store.showFavorites).toBe(false)

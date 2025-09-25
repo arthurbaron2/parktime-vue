@@ -6,13 +6,20 @@ import { computed } from 'vue'
 import AttractionSkeleton from '@/components/attractions/AttractionSkeleton.vue'
 import AttractionEntity from '@/components/attractions/AttractionEntity.vue'
 
+const props = defineProps<{
+  showOnlyFavorites?: boolean
+}>()
+
 const filterStore = useFiltersStore()
 const sortedAttractions = useFilteredAttractions()
 const haveFavorites = computed(() => sortedAttractions.value.favorites.length > 0)
 const { loaderVisible } = useLoader()
 
 const haveAttractions = computed(
-  () => sortedAttractions.value.attractions.length > 0 && !filterStore.showFavorites,
+  () =>
+    sortedAttractions.value.attractions.length > 0 &&
+    !filterStore.showFavorites &&
+    !props.showOnlyFavorites,
 )
 </script>
 

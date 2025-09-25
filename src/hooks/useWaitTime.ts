@@ -1,6 +1,6 @@
 import { computed } from 'vue'
-import type { AttractionLiveData } from '@/types/themeParkTypes'
-import { getTimerColor } from '@/styles/attractionEntity.styles'
+import type { AttractionLiveData } from '@/types/themeParksAPI.types'
+import { getTimerColor } from '@/utils/attraction'
 import { useFiltersStore } from '@/stores/filters'
 
 const useWaitTime = ({ liveData }: { liveData: AttractionLiveData }) => {

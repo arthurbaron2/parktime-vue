@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useFavorites } from '@/stores/favorites'
-import type { AttractionLiveData } from '@/types/themeParkTypes'
+import type { AttractionLiveData } from '@/types/themeParksAPI.types'
 import { computed } from 'vue'
 import useWaitTime from '@/hooks/useWaitTime'
 

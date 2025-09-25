@@ -1,4 +1,4 @@
-import type { Status } from '@/types/themeParkTypes'
+import type { Status } from '@/types/themeParksAPI.types'
 
 export const getTimerColor = (status: Status, waitTime?: number) => {
   if (waitTime === undefined || status !== 'OPERATING' || waitTime < 0)

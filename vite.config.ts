@@ -24,6 +24,6 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
   },
   optimizeDeps: {
-    exclude: ['@tailwindcss/oxide'],
+    exclude: ['@tailwindcss/oxide', 'oh-vue-icons/icons'],
   },
 })

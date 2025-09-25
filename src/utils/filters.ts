@@ -1,4 +1,4 @@
-import type { AttractionLiveData } from '@/types/themeParkTypes'
+import type { AttractionLiveData } from '@/types/themeParksAPI.types'
 import { type SortBy } from '@/stores/filters'
 
 export const sortAttractions = (filteredValues: AttractionLiveData[], sortBy: SortBy) =>

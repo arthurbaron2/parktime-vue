@@ -1,9 +1,11 @@
-import type { AttractionLiveData, LiveData } from '@/types/themeParkTypes'
+import type { AttractionLiveData, LiveData } from '@/types/themeParksAPI.types'
 import { sortAttractions } from '@/utils/filters'
 import { computed } from 'vue'
 import { useFavorites } from '@/stores/favorites'
 import { useFiltersStore } from '@/stores/filters'
 import useLiveData from './useLiveData'
+import { getChildParksFromResort } from '@/utils/park'
+import useCurrentPark from './useCurrentPark'
 
 const removedAttractions: string[] = [
   'c2e37859-cd32-4a34-9d6f-43d32d744b4e',
@@ -15,13 +17,10 @@ const removedAttractions: string[] = [
 const useFilteredAttractions = () => {
   const filterStore = useFiltersStore()
   const favoritesStore = useFavorites()
+  const park = useCurrentPark()
   const { data } = useLiveData()
 
   const filterByEntityType = (item: LiveData) => item.entityType === 'ATTRACTION'
-  const filterByPark = (item: LiveData) => {
-    if (filterStore.parkIdFilter === 'ALL') return true
-    return item.parkId === filterStore.parkIdFilter
-  }
   const filterByStatus = (item: LiveData) =>
     filterStore.showClosed ? true : ['OPERATING', 'DOWN'].includes(item.status)
   const filterByFavorites = (item: LiveData) => favoritesStore.favorites.includes(item.id)
@@ -31,7 +30,15 @@ const useFilteredAttractions = () => {
     attractions: AttractionLiveData[]
     favorites: AttractionLiveData[]
   }>(() => {
-    if (!data.value) return { attractions: [], favorites: [] }
+    const filterByPark = (item: LiveData) => {
+      if (!park.value?.parkId) return true
+      const parks = getChildParksFromResort(park.value.parkId)
+      return parks.some((park) => park.parkId === item.parkId)
+    }
+
+    if (!data.value) {
+      return { attractions: [], favorites: [] }
+    }
 
     const filteredValues = data.value.liveData
       .filter(filterByEntityType)

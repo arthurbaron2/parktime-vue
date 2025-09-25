@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { useFiltersStore } from '@/stores/filters'
 import useLiveData from '@/hooks/useLiveData'
-import { DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID } from '@/utils/constants'
-import NavigationMenu from '@/components/NavigationMenu.vue'
 
-import {
-  disneylandParkRadient,
-  disneylandStudiosRadient,
-  allParksRadient,
-} from '@/styles/homeView.styles'
+import NavigationMenu from '@/components/common/NavigationMenu.vue'
+import useCurrentPark from '@/hooks/useCurrentPark'
+import { parkGradientClass } from '@/styles/buttons.styles'
 
-const filterStore = useFiltersStore()
+const park = useCurrentPark()
 const { error, refetch } = useLiveData()
 </script>
 
@@ -27,16 +22,12 @@ const { error, refetch } = useLiveData()
   <main
     v-else
     class="pb-17 min-h-screen"
-    :class="{
-      [disneylandParkRadient]: filterStore.parkIdFilter === DISNEYLAND_PARK_ID,
-      [disneylandStudiosRadient]: filterStore.parkIdFilter === DISNEY_STUDIOS_ID,
-      [allParksRadient]: filterStore.parkIdFilter === 'ALL',
-    }"
+    :class="parkGradientClass({ park: park?.parkId || 'default' })"
   >
-    <h1 class="sr-only">Waitopia</h1>
+    <h1 class="sr-only">Park time travel</h1>
     <div class="p-2">
       <RouterView />
     </div>
   </main>
-  <NavigationMenu />
+  <NavigationMenu v-if="park" />
 </template>

@@ -1,4 +1,4 @@
-import type { ResortSchedule } from '@/types/themeParkTypes'
+import type { ResortSchedule } from '@/types/themeParksAPI.types'
 import { DISNEYLAND_RESORT_ID } from '@/utils/constants'
 import { useQuery } from '@tanstack/vue-query'
 

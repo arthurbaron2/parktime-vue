@@ -1,9 +1,11 @@
 import useLiveData from '@/hooks/useLiveData'
 import { useFiltersStore } from '@/stores/filters'
 import { useFavorites } from '@/stores/favorites'
-import type { LiveData, ShowLiveData } from '@/types/themeParkTypes'
+import type { LiveData, ShowLiveData } from '@/types/themeParksAPI.types'
 import { computed } from 'vue'
 import { getDiffInMinutes } from '@/utils/date'
+import { getChildParksFromResort } from '@/utils/park'
+import useCurrentPark from './useCurrentPark'
 
 const removedShows: string[] = ['4e9e9271-1962-4fad-9f73-9370954018cf']
 
@@ -11,11 +13,12 @@ const useFilteredShows = ({ showAllNextShows = false }: { showAllNextShows?: boo
   const { data } = useLiveData()
   const filterStore = useFiltersStore()
   const favoritesStore = useFavorites()
-
+  const park = useCurrentPark()
   const filterByEntityType = (item: LiveData) => item.entityType === 'SHOW'
   const filterByPark = (item: LiveData) => {
-    if (filterStore.parkIdFilter === 'ALL') return true
-    return item.parkId === filterStore.parkIdFilter
+    if (!park.value?.parkId) return true
+    const parks = getChildParksFromResort(park.value.parkId)
+    return parks.some((park) => park.parkId === item.parkId)
   }
 
   const filterByRemovedShows = (item: ShowLiveData) => !removedShows.includes(item.id)

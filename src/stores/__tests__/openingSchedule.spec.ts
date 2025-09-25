@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useOpeningSchedule } from '../openingSchedule'
 import { ref, type Ref } from 'vue'
 import { DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID } from '@/utils/constants'
-import type { ResortSchedule } from '@/types/themeParkTypes'
+import type { ResortSchedule } from '@/types/themeParksAPI.types'
 
 let mockQueryReturn: { data: Ref<ResortSchedule | undefined> }
 

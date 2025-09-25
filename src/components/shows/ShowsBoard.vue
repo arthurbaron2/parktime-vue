@@ -30,12 +30,6 @@ const haveShows = computed(
     !props.showOnlyFavorites,
 )
 
-console.log({
-  length: filteredShows.value.nextShows.length,
-  showFavorites: filterStore.showFavorites,
-  showOnlyFavorites: props.showOnlyFavorites,
-})
-
 const isEmpty = computed(() => props.showOnlyFavorites && !haveFavorites.value && !haveShows.value)
 </script>
 

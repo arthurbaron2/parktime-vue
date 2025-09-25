@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ParkFilter from '@/components/ParkFilter.vue'
+import ParkFilter from '@/components/common/ParkFilter.vue'
 import ShowsBoard from '@/components/shows/ShowsBoard.vue'
 </script>
 
