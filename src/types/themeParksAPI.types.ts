@@ -33,7 +33,7 @@ export interface AttractionLiveData {
   entityType: 'ATTRACTION'
   parkId: string
   externalId: string
-  queue: {
+  queue?: {
     STANDBY: {
       waitTime: number
     }

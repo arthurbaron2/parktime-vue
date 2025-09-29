@@ -5,8 +5,8 @@ import { useFiltersStore } from '@/stores/filters'
 
 const useWaitTime = ({ liveData }: { liveData: AttractionLiveData }) => {
   const filters = useFiltersStore()
-  const standbyWaitTime = liveData.queue.STANDBY?.waitTime
-  const singleRiderWaitTime = liveData.queue.SINGLE_RIDER?.waitTime
+  const standbyWaitTime = liveData.queue?.STANDBY?.waitTime
+  const singleRiderWaitTime = liveData.queue?.SINGLE_RIDER?.waitTime
   const status = computed(() => liveData.status)
 
   const mainWaitTime = computed(() => {

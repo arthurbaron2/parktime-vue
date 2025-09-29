@@ -32,6 +32,7 @@ const useFilteredAttractions = () => {
   }>(() => {
     const filterByPark = (item: LiveData) => {
       if (!park.value?.parkId) return true
+
       const parks = getChildParksFromResort(park.value.parkId)
       return parks.some((park) => park.parkId === item.parkId)
     }

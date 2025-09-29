@@ -22,12 +22,40 @@ const resorts = getResorts()
           ALPHA
         </span>
       </p>
-      <p class="text-center my-10 text-white">
-        Get the waiting time of your favorite attractions and shows in real time, for free and at
-        any time, in the simplest way, without ads and without pushing to buy a fast pass.
-      </p>
+
+      <ul class="my-10 px-2 text-white md:w-1/2 mx-auto flex flex-col gap-2">
+        <li class="flex items-center gap-2">
+          <v-icon name="fa-clock" class="text-lg mr-2" />
+          <span>Your favorites attractions and shows in real time at any time</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <v-icon name="fa-dollar-sign" class="text-lg mr-2" />
+          <span>Free access without login</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <v-icon name="fa-shield-alt" class="text-md mr-2" />
+          <span>No ads, no tracking, no data collection</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <v-icon name="fa-accessible-icon" class="text-md mr-2" />
+          <span>Easy to use, fully accessible</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <v-icon name="fa-store-slash" class="text-md mr-2" />
+          <span>Without pushing to buy a fast pass</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <v-icon name="fa-cog" class="text-md mr-2" />
+          <span>A lot of options to personalize your experience</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <v-icon name="md-attractions" class="text-md mr-2" />
+          <span>A lot of informations about your favorites attractions</span>
+        </li>
+      </ul>
+
       <h2 class="text-lg font-bold text-center mb-6">Please choose a resort to get started</h2>
-      <div class="flex gap-4 flex-wrap justify-center">
+      <div class="flex gap-4 mb-6 flex-wrap justify-center">
         <RouterLink
           v-for="resort in resorts"
           :key="resort.parkId"

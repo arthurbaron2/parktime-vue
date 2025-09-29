@@ -12,5 +12,5 @@ const filterStore = useFiltersStore()
   <ParkFilter />
   <ScheduleBanner />
   <ShowsBoard v-if="filterStore.showNextShows" :show-only-favorites="true" />
-  <AttractionsBoard :show-only-favorites="true" />
+  <AttractionsBoard :show-only-favorites="false" />
 </template>
