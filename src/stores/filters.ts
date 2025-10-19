@@ -20,10 +20,10 @@ const defaultFilters: Filters = {
   entityTypeFilter: 'ATTRACTION',
   sortBy: 'TIME_DOWN',
   showFavorites: false,
-  showClosed: false,
+  showClosed: true,
   showNextShows: true,
   showtimeDiff: 120,
-  showClosingSoon: false,
+  showClosingSoon: true,
   showClosingSoonDiff: 60,
 }
 
