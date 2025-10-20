@@ -13,6 +13,7 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@douxcode/vue-spring-bottom-sheet": "^2.5.0",
     "@tailwindcss/vite": "^4.1.13",
     "@tanstack/vue-query": "^5.81.5",
     "@vueform/vueform": "^1.13.2",
@@ -29,7 +30,7 @@
     "@types/node": "^22.15.32",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vitest/eslint-plugin": "^1.2.7",
-    "@vue/cli-plugin-pwa": "~5.0.0",
+    "@vue/cli-plugin-pwa": "^5.0.9",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.5.1",
     "@vue/test-utils": "^2.4.6",

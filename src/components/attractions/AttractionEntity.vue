@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import BottomSheet from '@douxcode/vue-spring-bottom-sheet'
+import '@douxcode/vue-spring-bottom-sheet/dist/style.css'
+import { ref } from 'vue'
 import { useFavorites } from '@/stores/favorites'
 import type { AttractionLiveData } from '@/types/parktimeapi.types'
 import { computed } from 'vue'
@@ -13,6 +16,8 @@ const status = computed(() => props.liveData.status)
 const { mainWaitTime, backupWaitTime, mainWaitTimeClass, backupWaitTimeClass } = useWaitTime({
   liveData: props.liveData,
 })
+
+const sheet = ref(false)
 </script>
 
 <template>
@@ -22,7 +27,7 @@ const { mainWaitTime, backupWaitTime, mainWaitTimeClass, backupWaitTimeClass } =
       'bg-slate-200/30 shadow-slate-600/50':
         props.liveData.status === 'DOWN' || props.liveData.status === 'CLOSED',
     }"
-    class="px-3 py-2 relative flex items-center min-h-15 rounded-xl"
+    class="px-3 py-2 relative flex items-center min-h-15 rounded-xl max-w-full"
   >
     <div
       class="size-10 rounded-full relative flex items-center justify-center shadow-md shadow-slate-700/50"
@@ -43,9 +48,13 @@ const { mainWaitTime, backupWaitTime, mainWaitTimeClass, backupWaitTimeClass } =
       </div>
     </div>
 
-    <h2 class="pl-3 overflow-hidden overflow-ellipsis whitespace-nowrap flex-1 font-bold">
+    <button
+      type="button"
+      @click="sheet = true"
+      class="pl-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-left flex-1 font-bold"
+    >
       {{ liveData.name }}
-    </h2>
+    </button>
 
     <div class="ml-3">
       <button
@@ -58,4 +67,5 @@ const { mainWaitTime, backupWaitTime, mainWaitTimeClass, backupWaitTimeClass } =
       </button>
     </div>
   </div>
+  <BottomSheet v-model="sheet"> <div>contnet</div> </BottomSheet>
 </template>

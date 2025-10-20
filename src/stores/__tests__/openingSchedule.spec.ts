@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useOpeningSchedule } from '../openingSchedule'
 import { ref, type Ref } from 'vue'
 import { DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID } from '@/utils/constants'
-import type { ResortSchedule } from '@/types/themeParksAPI.types'
+import type { ParkSchedule, ResortSchedule } from '@/types/parktimeapi.types'
 
 let mockQueryReturn: { data: Ref<ResortSchedule | undefined> }
 
@@ -112,7 +112,7 @@ describe('useOpeningSchedule', () => {
   it('retourne undefined si un parc est manquant', () => {
     const mockNoDisneyland: ResortSchedule = {
       ...mockResortSchedule,
-      parks: mockResortSchedule.parks.filter((p) => p.id !== DISNEYLAND_PARK_ID),
+      parks: mockResortSchedule.parks.filter((p: ParkSchedule) => p.id !== DISNEYLAND_PARK_ID),
     }
     mockQueryReturn = { data: ref(mockNoDisneyland) }
     const store = useOpeningSchedule()
