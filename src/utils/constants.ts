@@ -38,7 +38,7 @@ export const PARKS: Park[] = [
   {
     id: 'asterix-park',
     parkId: ASTERIX_PARK_ID,
-    parkName: 'Park Asterix',
+    parkName: 'Parc Asterix',
     showInResortSelection: true,
     showInParkFilter: true,
   },

@@ -1,7 +1,7 @@
-import type { Status } from '@/types/themeParksAPI.types'
+import type { Status } from '@/types/parktimeapi.types'
 
-export const getTimerColor = (status: Status, waitTime?: number) => {
-  if (waitTime === undefined || status !== 'OPERATING' || waitTime < 0)
+export const getTimerColor = (status: Status, waitTime: number | null) => {
+  if (waitTime === null || status !== 'OPERATING' || waitTime < 0)
     return 'bg-slate-100 text-slate-800'
 
   if (waitTime >= 45) return 'bg-rose-400 text-rose-950 '

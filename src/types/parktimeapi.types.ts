@@ -17,7 +17,6 @@ export interface ShowLiveData {
   name: string
   entityType: 'SHOW'
   parkId: string
-  externalId: string
   showtimes: {
     type: string
     endTime: string
@@ -32,15 +31,8 @@ export interface AttractionLiveData {
   name: string
   entityType: 'ATTRACTION'
   parkId: string
-  externalId: string
-  queue?: {
-    STANDBY: {
-      waitTime: number
-    }
-    SINGLE_RIDER?: {
-      waitTime: number
-    }
-  }
+  standbyWait: number | null
+  singleRiderWait: number | null
   status: Status
   lastUpdated: string
 }

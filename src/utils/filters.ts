@@ -1,12 +1,12 @@
-import type { AttractionLiveData } from '@/types/themeParksAPI.types'
+import type { AttractionLiveData } from '@/types/parktimeapi.types'
 import { type SortBy } from '@/stores/filters'
 
 export const sortAttractions = (filteredValues: AttractionLiveData[], sortBy: SortBy) =>
   filteredValues.sort((a: AttractionLiveData, b: AttractionLiveData) => {
-    const aWaitTime = a.queue?.STANDBY?.waitTime || 0
-    const bWaitTime = b.queue?.STANDBY?.waitTime || 0
-    const aSingleRiderWaitTime = a.queue?.SINGLE_RIDER?.waitTime || aWaitTime
-    const bSingleRiderWaitTime = b.queue?.SINGLE_RIDER?.waitTime || bWaitTime
+    const aWaitTime = a.standbyWait || 0
+    const bWaitTime = b.standbyWait || 0
+    const aSingleRiderWaitTime = a.singleRiderWait || aWaitTime
+    const bSingleRiderWaitTime = b.singleRiderWait || bWaitTime
     const aStatus = a.status
     const bStatus = b.status
 

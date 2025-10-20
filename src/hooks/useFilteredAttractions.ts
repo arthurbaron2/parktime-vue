@@ -1,4 +1,4 @@
-import type { AttractionLiveData, LiveData } from '@/types/themeParksAPI.types'
+import type { AttractionLiveData, LiveData } from '@/types/parktimeapi.types'
 import { sortAttractions } from '@/utils/filters'
 import { computed } from 'vue'
 import { useFavorites } from '@/stores/favorites'

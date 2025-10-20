@@ -1,7 +1,7 @@
 import useLiveData from '@/hooks/useLiveData'
 import { useFiltersStore } from '@/stores/filters'
 import { useFavorites } from '@/stores/favorites'
-import type { LiveData, ShowLiveData } from '@/types/themeParksAPI.types'
+import type { LiveData, ShowLiveData } from '@/types/parktimeapi.types'
 import { computed } from 'vue'
 import { getDiffInMinutes } from '@/utils/date'
 import { getChildParksFromResort } from '@/utils/park'

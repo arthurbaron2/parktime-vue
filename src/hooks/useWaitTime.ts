@@ -1,17 +1,17 @@
 import { computed } from 'vue'
-import type { AttractionLiveData } from '@/types/themeParksAPI.types'
+import type { AttractionLiveData } from '@/types/parktimeapi.types'
 import { getTimerColor } from '@/utils/attraction'
 import { useFiltersStore } from '@/stores/filters'
 
 const useWaitTime = ({ liveData }: { liveData: AttractionLiveData }) => {
   const filters = useFiltersStore()
-  const standbyWaitTime = liveData.queue?.STANDBY?.waitTime
-  const singleRiderWaitTime = liveData.queue?.SINGLE_RIDER?.waitTime
+  const standbyWaitTime = liveData.standbyWait
+  const singleRiderWaitTime = liveData.singleRiderWait
   const status = computed(() => liveData.status)
 
   const mainWaitTime = computed(() => {
     if (filters.sortBy.includes('SINGLE_RIDER')) {
-      return singleRiderWaitTime || standbyWaitTime
+      return singleRiderWaitTime || standbyWaitTime || 0
     }
     return standbyWaitTime
   })

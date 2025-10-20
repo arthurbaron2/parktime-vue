@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ShowLiveData } from '@/types/themeParksAPI.types'
+import type { ShowLiveData } from '@/types/parktimeapi.types'
 import { getDiffInMinutes } from '@/utils/date'
 import { computed } from 'vue'
 import { useFiltersStore } from '@/stores/filters'

@@ -1,6 +1,6 @@
 {
-  "name": "Disneyland Paris Live Data",
-  "short_name": "DPLD",
+  "name": "Parktime Alpha",
+  "short_name": "Parktime",
   "icons": [
     {
       "src": "img/icons/android-chrome-192x192.png",
@@ -17,5 +17,5 @@
   "background_color": "#1D283C",
   "display": "standalone",
   "theme_color": "#1D283C",
-  "id": "disneylandparis-live-data"
+  "id": "parktime-alpha"
 }

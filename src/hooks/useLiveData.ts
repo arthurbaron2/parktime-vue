@@ -1,4 +1,4 @@
-import type { Destination } from '@/types/themeParksAPI.types'
+import type { Destination } from '@/types/parktimeapi.types'
 import { useQuery } from '@tanstack/vue-query'
 import { computed, watch } from 'vue'
 import useCurrentPark from './useCurrentPark'

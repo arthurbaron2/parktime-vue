@@ -1,4 +1,4 @@
-import type { EntityType } from '@/types/themeParksAPI.types'
+import type { EntityType } from '@/types/parktimeapi.types'
 import { defineStore } from 'pinia'
 
 export type SortBy = 'TIME_DOWN' | 'TIME_UP' | 'TIME_DOWN_SINGLE_RIDER' | 'TIME_UP_SINGLE_RIDER'
