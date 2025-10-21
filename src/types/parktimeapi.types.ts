@@ -59,3 +59,37 @@ export interface Schedule {
   description?: string
   openingTime: string
 }
+
+export interface Attraction {
+  id: string
+  name: string
+  parkId: string
+  parkName: string
+  parkZone: string
+  interests: string[]
+  heightRestriction: string
+  liveData: {
+    standbyWait: number | null
+    singleRiderWait: number | null
+    status: Status
+    recordedAt: string
+  }
+}
+
+export type Period = 'yesterday' | 'today'
+
+export interface Statistics {
+  recordedAt: string
+  standbyWait: number | null
+  singleRiderWait: number | null
+  status: Status
+}
+
+export type AttractionStatistics = Record<Period, Statistics[]>
+
+export interface Uptime {
+  totalTime: number
+  operatingTime: number
+  downTime: number
+  uptimePercentage: number
+}

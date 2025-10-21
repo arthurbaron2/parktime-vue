@@ -6,6 +6,7 @@ import { useFavorites } from '@/stores/favorites'
 import type { AttractionLiveData } from '@/types/parktimeapi.types'
 import { computed } from 'vue'
 import useWaitTime from '@/hooks/useWaitTime'
+import AttractionBottomSheet from '@/components/attractionBottomSheet/AttractionBottomSheet.vue'
 
 const props = defineProps<{ liveData: AttractionLiveData }>()
 
@@ -18,6 +19,8 @@ const { mainWaitTime, backupWaitTime, mainWaitTimeClass, backupWaitTimeClass } =
 })
 
 const sheet = ref(false)
+const instinctHeight = ref(0)
+const screenHeight = computed(() => document.documentElement.clientHeight)
 </script>
 
 <template>
@@ -53,7 +56,7 @@ const sheet = ref(false)
       @click="sheet = true"
       class="pl-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-left flex-1 font-bold"
     >
-      {{ liveData.name }}
+      {{ liveData.name }} - {{ liveData.id }}
     </button>
 
     <div class="ml-3">
@@ -67,5 +70,18 @@ const sheet = ref(false)
       </button>
     </div>
   </div>
-  <BottomSheet v-model="sheet"> <div>contnet</div> </BottomSheet>
+  <BottomSheet
+    v-model="sheet"
+    :snap-points="[instinctHeight]"
+    @instinct-height="(n) => (instinctHeight = n >= screenHeight ? n * 0.85 : n)"
+  >
+    <AttractionBottomSheet :attractionId="props.liveData.id" />
+  </BottomSheet>
 </template>
+
+<style>
+:root {
+  --vsbs-max-width: 2000px;
+  --vsbs-background: #e2e8f1;
+}
+</style>

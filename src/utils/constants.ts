@@ -1,4 +1,4 @@
-import type { Park } from '@/types/park.types'
+import type { Interest, Park } from '@/types/park.types'
 
 export const DISNEYLAND_PARK_ID = 'dae968d5-630d-4719-8b06-3d107e944401'
 export const DISNEYLAND_RESORT_ID = 'e8d0207f-da8a-4048-bec8-117aa946b2c2'
@@ -71,3 +71,62 @@ export const PARKS: Park[] = [
     showInParkFilter: true,
   },
 ]
+
+export const interests: Record<string, Interest> = {
+  roller_coaster: {
+    name: 'Roller coaster',
+    color: 'bg-green-500/20 text-green-950',
+  },
+  extreme_rides: {
+    name: 'Extreme',
+    color: 'bg-amber-500/20 text-amber-950',
+  },
+  water_ride: {
+    name: 'Water ride',
+    color: 'bg-blue-500/20 text-blue-950',
+  },
+  dark_ride: {
+    name: 'Dark ride',
+    color: 'bg-purple-500/20 text-purple-950',
+  },
+  family_ride: {
+    name: 'Family experience',
+    color: 'bg-yellow-500/20 text-yellow-950',
+  },
+  flat_ride: {
+    name: 'Flat ride',
+    color: 'bg-red-500/20 text-red-950',
+  },
+  kiddie_ride: {
+    name: 'Addapted to kids',
+    color: 'bg-pink-500/20 text-pink-950',
+  },
+  spin_ride: {
+    name: 'Spinning',
+    color: 'bg-orange-500/20 text-orange-950',
+  },
+  single_rider: {
+    name: 'Single rider service',
+    color: 'bg-gray-500/20 text-gray-950',
+  },
+  water_splash: {
+    name: 'Water splashing',
+    color: 'bg-cyan-500/20 text-cyan-950',
+  },
+  playground: {
+    name: 'Playground',
+    color: 'bg-green-500/20 text-green-950',
+  },
+  walking_ride: {
+    name: 'Walking experience',
+    color: 'bg-blue-500/20 text-blue-950',
+  },
+  transport_ride: {
+    name: 'Transport ride',
+    color: 'bg-gray-500/20 text-gray-950',
+  },
+  themed_experience: {
+    name: 'Immersive experience',
+    color: 'bg-purple-500/20 text-purple-950',
+  },
+}

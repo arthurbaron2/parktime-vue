@@ -20,7 +20,6 @@ const useLiveData = () => {
       if (!response.ok) {
         throw new Error('Network response was not ok')
       }
-      console.trace('FETCHING LIVE DATA FOR PARK', parkToFetch.value.parkId)
       return response.json()
     },
     enabled: computed(() => !!parkToFetch.value?.parkId),

@@ -30,3 +30,8 @@ export interface Park {
   showInResortSelection: boolean
   showInParkFilter: boolean
 }
+
+export interface Interest {
+  name: string
+  color: string
+}

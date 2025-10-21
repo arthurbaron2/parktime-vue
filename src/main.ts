@@ -24,6 +24,12 @@ import {
   FaStoreSlash,
   FaDollarSign,
   FaAccessibleIcon,
+  FaUserClock,
+  FaArrowsAltV,
+  FaChild,
+  FaLocationArrow,
+  FaMapMarkerAlt,
+  FaBolt,
 } from 'oh-vue-icons/icons/fa'
 import { MdAttractions } from 'oh-vue-icons/icons/md'
 import { GiPartyHat } from 'oh-vue-icons/icons/gi'
@@ -41,10 +47,16 @@ addIcons(
   FaCog,
   FaHome,
   FaClock,
+  FaUserClock,
   FaShieldAlt,
   FaStoreSlash,
   FaDollarSign,
   FaAccessibleIcon,
+  FaArrowsAltV,
+  FaChild,
+  FaLocationArrow,
+  FaMapMarkerAlt,
+  FaBolt,
 )
 
 import '../src/registerServiceWorker'
