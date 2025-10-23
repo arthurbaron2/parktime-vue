@@ -32,3 +32,10 @@ export const formatHoursFromMinutes = (minutes: number): string => {
 
   return `${hours}h${remainingMinutes.toString().padStart(2, '0')}`
 }
+
+export const formatTimeToFrench = (date: Date): string => {
+  return date.toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}

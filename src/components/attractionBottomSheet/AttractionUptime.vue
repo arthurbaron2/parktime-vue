@@ -24,8 +24,11 @@ const data = computed(() => ({
   labels: ['Operating', 'Paused'],
   datasets: [
     {
-      backgroundColor: ['#00A63E', '#FA2B36'],
+      backgroundColor: ['#00A63E', '#FDC800'],
       data: [uptime.value?.operating ?? 0, uptime.value?.down ?? 0],
+      borderWidth: 4,
+      borderColor: ['#D4DCE7', '#D4DCE7'],
+      borderRadius: 8,
     },
   ],
 }))
@@ -35,6 +38,9 @@ const options = {
     duration: 0,
   },
   plugins: {
+    legend: {
+      display: false,
+    },
     tooltip: {
       callbacks: {
         label: (context: TooltipItem<'doughnut'>) =>
@@ -46,8 +52,18 @@ const options = {
 </script>
 
 <template>
-  <div class="my-4 bg-slate-500/10 rounded-xl py-2 px-4 text-sm">
-    <h3 class="text-md font-bold text-center my-4">Attraction uptime</h3>
-    <Doughnut :data="data" :options="options" class="w-full h-full" />
+  <div class="my-4 bg-slate-500/10 rounded-xl p-4 text-sm">
+    <h3 class="text-lg font-bold text-center mb-4">Attraction uptime</h3>
+    <div class="flex items-center justify-center gap-2 mb-4">
+      <span class="flex items-center gap-1"><span class="w-4 h-1 bg-green-600" />Operating</span>
+      <span class="flex items-center gap-1"><span class="w-4 h-1 bg-yellow-500" />Paused</span>
+    </div>
+    <Doughnut
+      v-if="data.datasets[0].data[0] > 0"
+      :data="data"
+      :options="options"
+      class="w-full h-full"
+    />
+    <div v-else class="flex items-center justify-center my-8">No data available for today</div>
   </div>
 </template>
