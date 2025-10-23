@@ -1,23 +1,25 @@
-import type { Destination, Uptime } from '@/types/parktimeapi.types'
 import { onMounted, ref } from 'vue'
+import type { DayAttractionWaitTimes, Destination } from '@/types/parktimeapi.types'
 import useLiveData from './useLiveData'
 
-interface UseAttractionUptimeProps {
+interface UseAttractionDayWaitTimesProps {
   attractionId: string
 }
 
-const useAttractionUptime = ({ attractionId }: UseAttractionUptimeProps) => {
-  const attractionUptime = ref<Uptime | null>(null)
+const useAttractionDayWaitTimes = ({ attractionId }: UseAttractionDayWaitTimesProps) => {
+  const attractionWaitTimes = ref<DayAttractionWaitTimes | null>(null)
   const { data: liveData } = useLiveData()
 
-  const fetchAttractionUptime = async () => {
+  const fetchAttractionWaitTimes = async () => {
     if (!attractionId) {
       throw new Error('Attraction ID is required')
     }
+
     const timezone = (liveData.value as Destination).timezone
     const today = new Date().toLocaleDateString('fr-CA', { timeZone: timezone })
+
     const response = await fetch(
-      `https://parktime.fr/api/attraction/${attractionId}/uptime/${today}`,
+      `https://parktime.fr/api/attraction/${attractionId}/wait-times/${today}`,
     )
     if (!response.ok) {
       throw new Error('Network response was not ok')
@@ -26,10 +28,10 @@ const useAttractionUptime = ({ attractionId }: UseAttractionUptimeProps) => {
   }
 
   onMounted(async () => {
-    attractionUptime.value = await fetchAttractionUptime()
+    attractionWaitTimes.value = await fetchAttractionWaitTimes()
   })
 
-  return attractionUptime
+  return attractionWaitTimes
 }
 
-export default useAttractionUptime
+export default useAttractionDayWaitTimes

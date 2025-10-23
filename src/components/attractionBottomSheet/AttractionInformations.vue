@@ -2,34 +2,11 @@
 import type { Attraction } from '@/types/parktimeapi.types'
 import { computed } from 'vue'
 import AttractionInterest from './AttractionInterest.vue'
+import type { AttractionDetail } from '@/types/park.types'
 
 const props = defineProps<{ attraction: Attraction }>()
 
 const attraction = computed(() => props.attraction)
-
-interface AttractionTextDetail {
-  key: string
-  value: string
-  icon: string
-  type: 'text'
-}
-
-interface AttractionInterestDetail {
-  key: string
-  icon: string
-  type: 'interests'
-  value: string[]
-}
-
-interface AttractionLinkDetail {
-  key: string
-  icon: string
-  type: 'link'
-  value: string
-  text: string
-}
-
-type AttractionDetail = AttractionInterestDetail | AttractionLinkDetail | AttractionTextDetail
 
 const details = computed(
   () =>
@@ -53,7 +30,7 @@ const details = computed(
         type: 'interests',
       },
       attraction.value?.rcdbLink && {
-        key: 'RCDB page',
+        key: 'Data sheet',
         value: attraction.value?.rcdbLink,
         icon: 'fa-link',
         type: 'link',
@@ -77,6 +54,9 @@ const details = computed(
           <v-icon name="fa-external-link-alt" class="size-4" aria-hidden="true" />
           {{ detail.text }}
         </a>
+      </span>
+      <span v-else-if="detail.type === 'text'">
+        {{ detail.value }}
       </span>
     </li>
   </ul>

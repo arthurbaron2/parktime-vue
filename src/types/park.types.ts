@@ -35,3 +35,30 @@ export interface Interest {
   name: string
   color: string
 }
+
+interface AttractionTextDetail {
+  key: string
+  value: string
+  icon: string
+  type: 'text'
+}
+
+interface AttractionInterestDetail {
+  key: string
+  icon: string
+  type: 'interests'
+  value: string[]
+}
+
+interface AttractionLinkDetail {
+  key: string
+  icon: string
+  type: 'link'
+  value: string
+  text: string
+}
+
+export type AttractionDetail =
+  | AttractionInterestDetail
+  | AttractionLinkDetail
+  | AttractionTextDetail

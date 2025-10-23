@@ -14,11 +14,12 @@ import {
 import { Line } from 'vue-chartjs'
 import { computed } from 'vue'
 import 'chartjs-adapter-date-fns'
-import useAttractionStatistics from '@/hooks/useAttractionStatistics'
+import useAttractionWaitTimes from '@/hooks/useAttractionWaitTimes'
 import {
-  processWaitTimes,
-  processClosedPeriods,
-  processDownPeriods,
+  processWaitTimesFromDayData,
+  processSingleRiderWaitTimesFromDayData,
+  processClosedPeriodsFromDayData,
+  processDownPeriodsFromDayData,
   periodToChartPoints,
   waitTimesToChartPoints,
 } from '@/utils/attractionStatistics'
@@ -26,26 +27,27 @@ import { options } from './attractionStatisticChart.config'
 
 const props = defineProps<{ attraction: Attraction }>()
 
-const statistics = useAttractionStatistics({ attractionId: props.attraction.id })
-
-const todayStatistics = computed(() => {
-  return statistics.value?.today
-})
+const statistics = useAttractionWaitTimes({ attractionId: props.attraction.id })
 
 // Utiliser les fonctions utilitaires pour traiter les données
 const waitTimes = computed(() => {
-  if (!todayStatistics.value) return []
-  return processWaitTimes(todayStatistics.value)
+  if (!statistics.value) return []
+  return processWaitTimesFromDayData(statistics.value)
+})
+
+const singleRiderWaitTimes = computed(() => {
+  if (!statistics.value) return []
+  return processSingleRiderWaitTimesFromDayData(statistics.value)
 })
 
 const closedPeriods = computed(() => {
-  if (!todayStatistics.value) return []
-  return processClosedPeriods(todayStatistics.value, waitTimes.value)
+  if (!statistics.value) return []
+  return processClosedPeriodsFromDayData(statistics.value)
 })
 
 const downPeriods = computed(() => {
-  if (!todayStatistics.value) return []
-  return processDownPeriods(todayStatistics.value)
+  if (!statistics.value) return []
+  return processDownPeriodsFromDayData(statistics.value)
 })
 
 const data = computed(() => {
@@ -87,6 +89,19 @@ const data = computed(() => {
     borderRadius: 8,
   })
 
+  if (singleRiderWaitTimes.value.length > 0) {
+    datasets.push({
+      label: 'Single rider',
+      data: waitTimesToChartPoints(singleRiderWaitTimes.value),
+      borderColor: '#009866',
+      backgroundColor: '#009866',
+      borderWidth: 2,
+      fill: false,
+      stepped: 'before' as const,
+      pointRadius: 0,
+    })
+  }
+
   return { datasets }
 })
 
@@ -105,10 +120,13 @@ ChartJS.register(
 <template>
   <div class="my-4 bg-slate-500/10 rounded-xl py-4 px-4 text-sm">
     <h3 class="text-lg font-bold text-center mb-4 text-gray-800">Waiting time</h3>
-    <div class="flex items-center justify-center gap-2">
+    <div class="flex items-center justify-center gap-2 flex-wrap">
       <span class="flex items-center gap-1"><span class="w-4 h-1 bg-red-500" />Closed</span>
       <span class="flex items-center gap-1"><span class="w-4 h-1 bg-yellow-500" />Paused</span>
-      <span class="flex items-center gap-1"><span class="w-4 h-1 bg-blue-500" />Operating</span>
+      <span class="flex items-center gap-1"><span class="w-4 h-1 bg-blue-500" />Standby</span>
+      <span v-if="singleRiderWaitTimes.length > 0" class="flex items-center gap-1">
+        <span class="w-4 h-1 bg-emerald-600" />Single rider
+      </span>
     </div>
     <div v-if="data.datasets.length > 2" class="h-50">
       <Line :data="data" :options="options" />

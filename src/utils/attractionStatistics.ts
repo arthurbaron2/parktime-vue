@@ -1,237 +1,151 @@
-import type { Status } from '@/types/parktimeapi.types'
+import type { AttractionEvent, DayAttractionWaitTimes } from '@/types/parktimeapi.types'
 import { formatTimeToFrench } from './date'
-
-// Type pour les statistiques individuelles d'une attraction
-type AttractionStatistic = {
-  recordedAt: string
-  standbyWait: number | null
-  singleRiderWait: number | null
-  status: Status
-}
 
 export interface TimePoint {
   time: string
   waitTime: number
 }
 
-export interface Period {
-  start: string
-  end: string
+type EventType = 'wait' | 'closed' | 'down'
+
+interface TimelineEvent {
+  time: string
+  waitTime: number
+  type: EventType
 }
 
-/**
- * Transforme les données de l'API en points de temps d'attente pour le graphique
- */
-export function processWaitTimes(statistics: AttractionStatistic[]): TimePoint[] {
-  if (!statistics.length) return []
+const createTimelineEvent = (time: string, waitTime: number, type: EventType): TimelineEvent => ({
+  time,
+  waitTime,
+  type,
+})
 
+const hasDataAtTime = (standbyData: { recordedAt: string }[], time: string): boolean =>
+  standbyData.some((wt) => formatTimeToFrench(new Date(wt.recordedAt)) === time)
+
+const addEventsIfNoData = (
+  events: AttractionEvent[],
+  standbyData: { recordedAt: string }[],
+  eventType: 'closed' | 'down',
+  timelineEvents: TimelineEvent[],
+) => {
+  events.forEach((event) => {
+    const startTime = formatTimeToFrench(new Date(event.start))
+    const endTime = formatTimeToFrench(new Date(event.end))
+
+    if (!hasDataAtTime(standbyData, startTime)) {
+      timelineEvents.push(createTimelineEvent(startTime, 0, eventType))
+    }
+    if (!hasDataAtTime(standbyData, endTime)) {
+      timelineEvents.push(createTimelineEvent(endTime, 0, eventType))
+    }
+  })
+}
+
+const sortEventsByTime = (events: TimelineEvent[]): TimelineEvent[] =>
+  events.sort((a, b) => {
+    const timeA = new Date(`2024-01-01 ${a.time}:00`).getTime()
+    const timeB = new Date(`2024-01-01 ${b.time}:00`).getTime()
+    return timeA - timeB
+  })
+
+const processTimelineEvents = (events: TimelineEvent[]): TimePoint[] => {
   const points: TimePoint[] = []
+  let isInClosedOrDownPeriod = false
 
-  for (let i = 0; i < statistics.length; i++) {
-    const stat = statistics[i]
-    const time = formatTimeToFrench(new Date(stat.recordedAt))
-
-    // Vérifier si c'est une transition vers OPERATING
-    const isTransitionToOperating =
-      stat.status === 'OPERATING' &&
-      i > 0 &&
-      (statistics[i - 1].status === 'CLOSED' ||
-        statistics[i - 1].status === 'DOWN' ||
-        statistics[i - 1].status === 'REFURBISHMENT')
-
-    if (stat.standbyWait !== null) {
-      // Si c'est une transition, ajouter un point à 0 à -1 minute (seulement si waitTime > 0)
-      if (isTransitionToOperating && stat.standbyWait > 0) {
-        const transitionTime = new Date(stat.recordedAt)
-        transitionTime.setMinutes(transitionTime.getMinutes() - 1)
-        const transitionTimeStr = transitionTime.toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-
-        points.push({
-          time: transitionTimeStr,
-          waitTime: 0,
-        })
-      }
-
-      // Ajouter le point normal
-      points.push({
-        time: time,
-        waitTime: stat.standbyWait,
-      })
+  for (const event of events) {
+    if (event.type === 'wait') {
+      isInClosedOrDownPeriod = false
+      points.push({ time: event.time, waitTime: event.waitTime })
+    } else {
+      const isStartOfPeriod: boolean = !isInClosedOrDownPeriod
+      isInClosedOrDownPeriod = isStartOfPeriod
+      points.push({ time: event.time, waitTime: 0 })
     }
-
-    // Ajouter un point à 0 au début de chaque période de fermeture/arrêt
-    if (i > 0) {
-      const prevStat = statistics[i - 1]
-      const isTransitionToClosedOrDown =
-        (stat.status === 'CLOSED' || stat.status === 'DOWN' || stat.status === 'REFURBISHMENT') &&
-        prevStat.status === 'OPERATING'
-
-      if (isTransitionToClosedOrDown) {
-        const transitionTime = new Date(stat.recordedAt)
-        transitionTime.setMinutes(transitionTime.getMinutes() - 1)
-        const transitionTimeStr = transitionTime.toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-
-        points.push({
-          time: transitionTimeStr,
-          waitTime: 0,
-        })
-      }
-    }
-  }
-
-  // Ajouter un point à 0 au début si la première statistique est OPERATING
-  // Cela crée une transition depuis la période de fermeture par défaut (6h)
-  if (points.length > 0 && statistics.length > 0) {
-    const firstStat = statistics[0]
-    if (firstStat.status === 'OPERATING' && firstStat.standbyWait !== null) {
-      // Ajouter un point de transition à 0 seulement si le premier point n'est pas déjà à 0
-      if (firstStat.standbyWait > 0) {
-        const transitionTime = new Date(firstStat.recordedAt)
-        transitionTime.setMinutes(transitionTime.getMinutes() - 1)
-        const transitionTimeStr = transitionTime.toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-
-        points.unshift({
-          time: transitionTimeStr,
-          waitTime: 0,
-        })
-      }
-    }
-  }
-
-  if (points.length > 0) {
-    points.push({
-      time: new Date().toLocaleTimeString('fr-FR', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      waitTime: points[points.length - 1].waitTime,
-    })
   }
 
   return points
 }
 
-/**
- * Identifie les périodes de fermeture avec prolongation jusqu'à maintenant
- */
-export function processClosedPeriods(
-  statistics: AttractionStatistic[],
-  waitTimes: TimePoint[],
-): Period[] {
-  if (!statistics.length) return []
+export const periodToChartPoints = (
+  period: AttractionEvent,
+  yValue: number,
+): { x: number; y: number }[] => [
+  { x: new Date(`2024-01-01 ${period.start}:00`).getTime(), y: yValue },
+  { x: new Date(`2024-01-01 ${period.end}:00`).getTime(), y: yValue },
+]
 
-  // Trouver le premier point OPERATING réel (même si waitTime = 0)
-  const firstOperatingPoint = waitTimes.find((point) => point.waitTime >= 0)
-
-  const periods: Period[] = [
-    {
-      start: '06:00',
-      end:
-        firstOperatingPoint?.time ||
-        new Date().toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-    },
-  ]
-  let currentPeriod: Period | null = null
-
-  for (let i = 0; i < statistics.length; i++) {
-    const stat = statistics[i]
-    const time = formatTimeToFrench(new Date(stat.recordedAt))
-
-    if (stat.status === 'CLOSED' || stat.status === 'REFURBISHMENT') {
-      if (!currentPeriod) {
-        currentPeriod = { start: time, end: time }
-      }
-    } else {
-      if (currentPeriod) {
-        // La période se termine à l'heure actuelle (transition vers OPERATING)
-        currentPeriod.end = time
-        periods.push(currentPeriod)
-        currentPeriod = null
-      }
-    }
-  }
-
-  // Si la dernière période est encore fermée, elle se prolonge jusqu'à maintenant
-  if (currentPeriod) {
-    currentPeriod.end = new Date().toLocaleTimeString('fr-FR', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-    periods.push(currentPeriod)
-  }
-
-  return periods
-}
-
-/**
- * Identifie les périodes d'arrêt avec prolongation jusqu'à maintenant
- */
-export function processDownPeriods(statistics: AttractionStatistic[]): Period[] {
-  if (!statistics.length || statistics.length < 2) return []
-
-  const periods: Period[] = []
-  let currentPeriod: Period | null = null
-
-  for (let i = 0; i < statistics.length; i++) {
-    const stat = statistics[i]
-    const time = formatTimeToFrench(new Date(stat.recordedAt))
-
-    if (stat.status === 'DOWN') {
-      if (!currentPeriod) {
-        currentPeriod = { start: time, end: time }
-      }
-    } else {
-      if (currentPeriod) {
-        // La période se termine à l'heure actuelle (transition vers OPERATING)
-        currentPeriod.end = time
-        periods.push(currentPeriod)
-        currentPeriod = null
-      }
-    }
-  }
-
-  // Si la dernière période est encore en panne, elle se prolonge jusqu'à maintenant
-  if (currentPeriod) {
-    currentPeriod.end = new Date().toLocaleTimeString('fr-FR', {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-    periods.push(currentPeriod)
-  }
-
-  return periods
-}
-
-/**
- * Convertit une période en points pour Chart.js
- */
-export function periodToChartPoints(period: Period, yValue: number): { x: number; y: number }[] {
-  return [
-    { x: new Date(`2024-01-01 ${period.start}:00`).getTime(), y: yValue },
-    { x: new Date(`2024-01-01 ${period.end}:00`).getTime(), y: yValue },
-    { x: new Date(`2024-01-01 ${period.end}:00`).getTime(), y: 0 },
-    { x: new Date(`2024-01-01 ${period.start}:00`).getTime(), y: 0 },
-  ]
-}
-
-/**
- * Convertit des points de temps d'attente en points pour Chart.js
- */
-export function waitTimesToChartPoints(waitTimes: TimePoint[]): { x: number; y: number }[] {
-  return waitTimes.map(({ time, waitTime }) => ({
+export const waitTimesToChartPoints = (waitTimes: TimePoint[]): { x: number; y: number }[] =>
+  waitTimes.map(({ time, waitTime }) => ({
     x: new Date(`2024-01-01 ${time}:00`).getTime(),
     y: waitTime,
   }))
+
+const filterDataByTimeInterval = (
+  waitTimes: { recordedAt: string; waitTime: number }[],
+  intervalMinutes: number = 15,
+): { recordedAt: string; waitTime: number }[] => {
+  if (waitTimes.length === 0) return []
+
+  const filtered: { recordedAt: string; waitTime: number }[] = [waitTimes[0]]
+  let lastTime = new Date(waitTimes[0].recordedAt)
+
+  for (let i = 1; i < waitTimes.length; i++) {
+    const currentTime = new Date(waitTimes[i].recordedAt)
+    const timeDiff = (currentTime.getTime() - lastTime.getTime()) / (1000 * 60)
+
+    if (timeDiff >= intervalMinutes) {
+      filtered.push(waitTimes[i])
+      lastTime = currentTime
+    }
+  }
+
+  return filtered
 }
+
+const processTimelineFromData = (
+  waitTimes: { recordedAt: string; waitTime: number }[],
+  closedEvents: AttractionEvent[],
+  downEvents: AttractionEvent[],
+): TimePoint[] => {
+  const filteredWaitTimes = filterDataByTimeInterval(waitTimes, 15)
+  const timelineEvents: TimelineEvent[] = []
+
+  filteredWaitTimes.forEach((waitTime) => {
+    timelineEvents.push(
+      createTimelineEvent(
+        formatTimeToFrench(new Date(waitTime.recordedAt)),
+        waitTime.waitTime,
+        'wait',
+      ),
+    )
+  })
+
+  addEventsIfNoData(closedEvents, filteredWaitTimes, 'closed', timelineEvents)
+  addEventsIfNoData(downEvents, filteredWaitTimes, 'down', timelineEvents)
+
+  const sortedEvents = sortEventsByTime(timelineEvents)
+  return processTimelineEvents(sortedEvents)
+}
+
+export const processWaitTimesFromDayData = (dayData: DayAttractionWaitTimes): TimePoint[] =>
+  processTimelineFromData(dayData.standby, dayData.closedEvents, dayData.downEvents)
+
+export const processSingleRiderWaitTimesFromDayData = (
+  dayData: DayAttractionWaitTimes,
+): TimePoint[] =>
+  processTimelineFromData(dayData.singleRider, dayData.closedEvents, dayData.downEvents)
+
+export const processClosedPeriodsFromDayData = (
+  dayData: DayAttractionWaitTimes,
+): AttractionEvent[] =>
+  dayData.closedEvents.map((event) => ({
+    start: formatTimeToFrench(new Date(event.start)),
+    end: formatTimeToFrench(new Date(event.end)),
+  }))
+
+export const processDownPeriodsFromDayData = (dayData: DayAttractionWaitTimes): AttractionEvent[] =>
+  dayData.downEvents.map((event) => ({
+    start: formatTimeToFrench(new Date(event.start)),
+    end: formatTimeToFrench(new Date(event.end)),
+  }))

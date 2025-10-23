@@ -60,6 +60,23 @@ export interface Schedule {
   openingTime: string
 }
 
+export interface DayAttractionWaitTimes {
+  singleRider: AttractionWaitTime[]
+  standby: AttractionWaitTime[]
+  closedEvents: AttractionEvent[]
+  downEvents: AttractionEvent[]
+}
+
+export interface AttractionWaitTime {
+  recordedAt: string
+  waitTime: number
+}
+
+export interface AttractionEvent {
+  start: string
+  end: string
+}
+
 export interface Attraction {
   id: string
   name: string
