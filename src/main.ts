@@ -30,6 +30,8 @@ import {
   FaLocationArrow,
   FaMapMarkerAlt,
   FaBolt,
+  FaExternalLinkAlt,
+  FaLink,
 } from 'oh-vue-icons/icons/fa'
 import { MdAttractions } from 'oh-vue-icons/icons/md'
 import { GiPartyHat } from 'oh-vue-icons/icons/gi'
@@ -57,6 +59,8 @@ addIcons(
   FaLocationArrow,
   FaMapMarkerAlt,
   FaBolt,
+  FaExternalLinkAlt,
+  FaLink,
 )
 
 import '../src/registerServiceWorker'

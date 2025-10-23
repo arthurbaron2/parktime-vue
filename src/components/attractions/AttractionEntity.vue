@@ -56,7 +56,7 @@ const screenHeight = computed(() => document.documentElement.clientHeight)
       @click="sheet = true"
       class="pl-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-left flex-1 font-bold"
     >
-      {{ liveData.name }} - {{ liveData.id }}
+      {{ liveData.name }}
     </button>
 
     <div class="ml-3">
