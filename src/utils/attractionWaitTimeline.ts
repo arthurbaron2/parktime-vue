@@ -81,37 +81,14 @@ export const waitTimesToChartPoints = (waitTimes: TimePoint[]): { x: number; y: 
     y: waitTime,
   }))
 
-const filterDataByTimeInterval = (
-  waitTimes: { recordedAt: string; waitTime: number }[],
-  intervalMinutes: number = 15,
-): { recordedAt: string; waitTime: number }[] => {
-  if (waitTimes.length === 0) return []
-
-  const filtered: { recordedAt: string; waitTime: number }[] = [waitTimes[0]]
-  let lastTime = new Date(waitTimes[0].recordedAt)
-
-  for (let i = 1; i < waitTimes.length; i++) {
-    const currentTime = new Date(waitTimes[i].recordedAt)
-    const timeDiff = (currentTime.getTime() - lastTime.getTime()) / (1000 * 60)
-
-    if (timeDiff >= intervalMinutes) {
-      filtered.push(waitTimes[i])
-      lastTime = currentTime
-    }
-  }
-
-  return filtered
-}
-
 const processTimelineFromData = (
   waitTimes: { recordedAt: string; waitTime: number }[],
   closedEvents: AttractionEvent[],
   downEvents: AttractionEvent[],
 ): TimePoint[] => {
-  const filteredWaitTimes = filterDataByTimeInterval(waitTimes, 15)
   const timelineEvents: TimelineEvent[] = []
 
-  filteredWaitTimes.forEach((waitTime) => {
+  waitTimes.forEach((waitTime) => {
     timelineEvents.push(
       createTimelineEvent(
         formatTimeToFrench(new Date(waitTime.recordedAt)),
@@ -121,14 +98,22 @@ const processTimelineFromData = (
     )
   })
 
-  addEventsIfNoData(closedEvents, filteredWaitTimes, 'closed', timelineEvents)
-  addEventsIfNoData(downEvents, filteredWaitTimes, 'down', timelineEvents)
+  const lastEvent = timelineEvents[timelineEvents.length - 1]
+
+  if (lastEvent) {
+    timelineEvents.push(
+      createTimelineEvent(formatTimeToFrench(new Date()), lastEvent.waitTime, 'wait'),
+    )
+  }
+
+  addEventsIfNoData(closedEvents, waitTimes, 'closed', timelineEvents)
+  addEventsIfNoData(downEvents, waitTimes, 'down', timelineEvents)
 
   const sortedEvents = sortEventsByTime(timelineEvents)
   return processTimelineEvents(sortedEvents)
 }
 
-export const processWaitTimesFromDayData = (dayData: DayAttractionWaitTimes): TimePoint[] =>
+export const processStandbyWaitTimesFromDayData = (dayData: DayAttractionWaitTimes): TimePoint[] =>
   processTimelineFromData(dayData.standby, dayData.closedEvents, dayData.downEvents)
 
 export const processSingleRiderWaitTimesFromDayData = (

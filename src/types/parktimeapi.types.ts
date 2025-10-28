@@ -96,14 +96,14 @@ export interface Attraction {
 
 export type Period = 'yesterday' | 'today'
 
-export interface Statistics {
+export interface WaitTimeData {
   recordedAt: string
   standbyWait: number | null
   singleRiderWait: number | null
   status: Status
 }
 
-export type AttractionStatistics = Record<Period, Statistics[]>
+export type AttractionWaitTimeline = Record<Period, WaitTimeData[]>
 
 export interface Uptime {
   totalTime: number

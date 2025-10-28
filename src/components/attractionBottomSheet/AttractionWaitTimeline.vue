@@ -16,38 +16,38 @@ import { computed } from 'vue'
 import 'chartjs-adapter-date-fns'
 import useAttractionWaitTimes from '@/hooks/useAttractionWaitTimes'
 import {
-  processWaitTimesFromDayData,
+  processStandbyWaitTimesFromDayData,
   processSingleRiderWaitTimesFromDayData,
   processClosedPeriodsFromDayData,
   processDownPeriodsFromDayData,
   periodToChartPoints,
   waitTimesToChartPoints,
-} from '@/utils/attractionStatistics'
-import { options } from './attractionStatisticChart.config'
+} from '@/utils/attractionWaitTimeline'
+import { options } from './attractionWaitTimelineChart.config'
 
 const props = defineProps<{ attraction: Attraction }>()
 
-const statistics = useAttractionWaitTimes({ attractionId: props.attraction.id })
+const waitTimeline = useAttractionWaitTimes({ attractionId: props.attraction.id })
 
 // Utiliser les fonctions utilitaires pour traiter les données
 const waitTimes = computed(() => {
-  if (!statistics.value) return []
-  return processWaitTimesFromDayData(statistics.value)
+  if (!waitTimeline.value) return []
+  return processStandbyWaitTimesFromDayData(waitTimeline.value)
 })
 
 const singleRiderWaitTimes = computed(() => {
-  if (!statistics.value) return []
-  return processSingleRiderWaitTimesFromDayData(statistics.value)
+  if (!waitTimeline.value) return []
+  return processSingleRiderWaitTimesFromDayData(waitTimeline.value)
 })
 
 const closedPeriods = computed(() => {
-  if (!statistics.value) return []
-  return processClosedPeriodsFromDayData(statistics.value)
+  if (!waitTimeline.value) return []
+  return processClosedPeriodsFromDayData(waitTimeline.value)
 })
 
 const downPeriods = computed(() => {
-  if (!statistics.value) return []
-  return processDownPeriodsFromDayData(statistics.value)
+  if (!waitTimeline.value) return []
+  return processDownPeriodsFromDayData(waitTimeline.value)
 })
 
 const data = computed(() => {
@@ -124,7 +124,7 @@ ChartJS.register(
       <span class="flex items-center gap-1"><span class="w-4 h-1 bg-red-500" />Closed</span>
       <span class="flex items-center gap-1"><span class="w-4 h-1 bg-yellow-500" />Paused</span>
       <span class="flex items-center gap-1"><span class="w-4 h-1 bg-blue-500" />Standby</span>
-      <span v-if="singleRiderWaitTimes.length > 0" class="flex items-center gap-1">
+      <span v-if="singleRiderWaitTimes.length > 2" class="flex items-center gap-1">
         <span class="w-4 h-1 bg-emerald-600" />Single rider
       </span>
     </div>

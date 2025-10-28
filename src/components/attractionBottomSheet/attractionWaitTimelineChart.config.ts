@@ -76,7 +76,7 @@ export const options = {
       cornerRadius: 8,
       displayColors: true,
       filter: function (tooltipItem: TooltipItem<'line'>) {
-        return tooltipItem.dataset.label === 'Waiting time' && tooltipItem.parsed.y !== 0
+        return tooltipItem.parsed.y !== 0
       },
       callbacks: {
         title: function (context: TooltipItem<'line'>[]) {
