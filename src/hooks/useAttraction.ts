@@ -13,7 +13,7 @@ const useAttraction = ({ attractionId }: UseAttractionProps) => {
     if (!attractionId) {
       throw new Error('Attraction ID is required')
     }
-    const response = await fetch(`https://parktime.fr/api/attraction/${attractionId}`)
+    const response = await fetch(`https://api.parktime.fr/attraction/${attractionId}`)
     if (!response.ok) {
       throw new Error('Network response was not ok')
     }

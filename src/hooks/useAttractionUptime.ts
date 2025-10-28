@@ -17,7 +17,7 @@ const useAttractionUptime = ({ attractionId }: UseAttractionUptimeProps) => {
     const timezone = (liveData.value as Destination).timezone
     const today = new Date().toLocaleDateString('fr-CA', { timeZone: timezone })
     const response = await fetch(
-      `https://parktime.fr/api/attraction/${attractionId}/uptime/${today}`,
+      `https://api.parktime.fr/attraction/${attractionId}/uptime/${today}`,
     )
     if (!response.ok) {
       throw new Error('Network response was not ok')

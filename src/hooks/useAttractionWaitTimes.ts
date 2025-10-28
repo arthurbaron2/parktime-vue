@@ -19,7 +19,7 @@ const useAttractionDayWaitTimes = ({ attractionId }: UseAttractionDayWaitTimesPr
     const today = new Date().toLocaleDateString('fr-CA', { timeZone: timezone })
 
     const response = await fetch(
-      `https://parktime.fr/api/attraction/${attractionId}/wait-times/${today}`,
+      `https://api.parktime.fr/attraction/${attractionId}/wait-times/${today}`,
     )
     if (!response.ok) {
       throw new Error('Network response was not ok')

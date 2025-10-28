@@ -16,7 +16,7 @@ const useLiveData = () => {
       if (!parkToFetch.value?.parkId) {
         throw new Error('Park ID not available')
       }
-      const response = await fetch(`https://parktime.fr/api/live-data/${parkToFetch.value.parkId}`)
+      const response = await fetch(`https://api.parktime.fr/live-data/${parkToFetch.value.parkId}`)
       if (!response.ok) {
         throw new Error('Network response was not ok')
       }
