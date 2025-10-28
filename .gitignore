@@ -1,4 +1,4 @@
-# Logs
+# --- Logs ---
 logs
 *.log
 npm-debug.log*
@@ -7,24 +7,47 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# --- Node ---
 node_modules
+*.tsbuildinfo
+
+# --- OS / IDE ---
 .DS_Store
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# --- Vue build ---
 dist
 dist-ssr
 coverage
 *.local
-
 /cypress/videos/
 /cypress/screenshots/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# --- Backend build (si TypeScript) ---
+build
+dist
+
+# --- Docker ---
+docker-compose.override.yml
+secrets/
+.env
+postgres_data/
+pgadmin_data/
+caddy_data/
+caddy_config/
+*.pid
+
+# --- Certificates / local config ---
+*.pem
+*.key
+*.crt
+*.csr
+
+# --- Misc ---
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-*.tsbuildinfo
