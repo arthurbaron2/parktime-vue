@@ -29,6 +29,7 @@ export interface Park {
   parentParkId?: string
   showInResortSelection: boolean
   showInParkFilter: boolean
+  timezone: string
 }
 
 export interface Interest {

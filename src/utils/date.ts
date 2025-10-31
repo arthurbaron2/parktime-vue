@@ -34,8 +34,9 @@ export const formatHoursFromMinutes = (minutes: number): string => {
 }
 
 export const formatTimeToFrench = (date: Date): string => {
-  return date.toLocaleTimeString('fr-FR', {
+  return date.toLocaleString('fr-FR', {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'Europe/Paris',
   })
 }

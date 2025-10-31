@@ -81,11 +81,24 @@ export const waitTimesToChartPoints = (waitTimes: TimePoint[]): { x: number; y: 
     y: waitTime,
   }))
 
-const processTimelineFromData = (
-  waitTimes: { recordedAt: string; waitTime: number }[],
-  closedEvents: AttractionEvent[],
-  downEvents: AttractionEvent[],
-): TimePoint[] => {
+const removeDuplicateTimelineEvents = (events: TimelineEvent[]): TimelineEvent[] => {
+  return events.filter((event, index) =>
+    index === 0 ? true : event.waitTime !== events[index - 1].waitTime,
+  )
+}
+
+const processTimelineFromData = ({
+  waitTimes,
+  closedEvents,
+  downEvents,
+  hasLastEvent = true,
+}: {
+  waitTimes: { recordedAt: string; waitTime: number }[]
+  closedEvents: AttractionEvent[]
+  downEvents: AttractionEvent[]
+  timezone: string
+  hasLastEvent: boolean
+}) => {
   const timelineEvents: TimelineEvent[] = []
 
   waitTimes.forEach((waitTime) => {
@@ -98,28 +111,48 @@ const processTimelineFromData = (
     )
   })
 
-  const lastEvent = timelineEvents[timelineEvents.length - 1]
+  const uniqueTimelineEvents = removeDuplicateTimelineEvents(timelineEvents)
 
-  if (lastEvent) {
-    timelineEvents.push(
+  const lastEvent = uniqueTimelineEvents[uniqueTimelineEvents.length - 1]
+
+  if (lastEvent && hasLastEvent) {
+    uniqueTimelineEvents.push(
       createTimelineEvent(formatTimeToFrench(new Date()), lastEvent.waitTime, 'wait'),
     )
   }
 
-  addEventsIfNoData(closedEvents, waitTimes, 'closed', timelineEvents)
-  addEventsIfNoData(downEvents, waitTimes, 'down', timelineEvents)
+  addEventsIfNoData(closedEvents, waitTimes, 'closed', uniqueTimelineEvents)
+  addEventsIfNoData(downEvents, waitTimes, 'down', uniqueTimelineEvents)
 
-  const sortedEvents = sortEventsByTime(timelineEvents)
+  const sortedEvents = sortEventsByTime(uniqueTimelineEvents)
   return processTimelineEvents(sortedEvents)
 }
 
-export const processStandbyWaitTimesFromDayData = (dayData: DayAttractionWaitTimes): TimePoint[] =>
-  processTimelineFromData(dayData.standby, dayData.closedEvents, dayData.downEvents)
+export const processStandbyWaitTimesFromDayData = (
+  dayData: DayAttractionWaitTimes,
+  timezone: string,
+): TimePoint[] =>
+  processTimelineFromData({
+    waitTimes: dayData.standby,
+    closedEvents: dayData.closedEvents,
+    downEvents: dayData.downEvents,
+    timezone,
+    hasLastEvent: true,
+  })
 
 export const processSingleRiderWaitTimesFromDayData = (
-  dayData: DayAttractionWaitTimes,
+  { singleRider, closedEvents, downEvents }: DayAttractionWaitTimes,
+  timezone: string,
 ): TimePoint[] =>
-  processTimelineFromData(dayData.singleRider, dayData.closedEvents, dayData.downEvents)
+  singleRider.length > 0
+    ? processTimelineFromData({
+        waitTimes: singleRider,
+        closedEvents: closedEvents,
+        downEvents: downEvents,
+        timezone,
+        hasLastEvent: singleRider[singleRider.length - 1].waitTime !== 0,
+      })
+    : []
 
 export const processClosedPeriodsFromDayData = (
   dayData: DayAttractionWaitTimes,

@@ -24,20 +24,25 @@ import {
   waitTimesToChartPoints,
 } from '@/utils/attractionWaitTimeline'
 import { options } from './attractionWaitTimelineChart.config'
+import { getParkFromId } from '@/utils/park'
 
 const props = defineProps<{ attraction: Attraction }>()
+
+const timezone = computed(() => {
+  return getParkFromId(props.attraction.parkId)?.timezone || 'Europe/Paris'
+})
 
 const waitTimeline = useAttractionWaitTimes({ attractionId: props.attraction.id })
 
 // Utiliser les fonctions utilitaires pour traiter les données
 const waitTimes = computed(() => {
   if (!waitTimeline.value) return []
-  return processStandbyWaitTimesFromDayData(waitTimeline.value)
+  return processStandbyWaitTimesFromDayData(waitTimeline.value, timezone.value)
 })
 
 const singleRiderWaitTimes = computed(() => {
   if (!waitTimeline.value) return []
-  return processSingleRiderWaitTimesFromDayData(waitTimeline.value)
+  return processSingleRiderWaitTimesFromDayData(waitTimeline.value, timezone.value)
 })
 
 const closedPeriods = computed(() => {

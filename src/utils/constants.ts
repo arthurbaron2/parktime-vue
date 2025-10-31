@@ -18,6 +18,7 @@ export const PARKS: Park[] = [
     parentParkId: DISNEYLAND_RESORT_ID,
     showInResortSelection: false,
     showInParkFilter: true,
+    timezone: 'Europe/Paris',
   },
   {
     id: 'disneyland-paris-resort',
@@ -26,6 +27,7 @@ export const PARKS: Park[] = [
     childParksIds: [DISNEYLAND_PARK_ID, DISNEY_STUDIOS_ID],
     showInResortSelection: true,
     showInParkFilter: true,
+    timezone: 'Europe/Paris',
   },
   {
     id: 'walt-disney-studios',
@@ -34,6 +36,7 @@ export const PARKS: Park[] = [
     parentParkId: DISNEYLAND_RESORT_ID,
     showInResortSelection: false,
     showInParkFilter: true,
+    timezone: 'Europe/Paris',
   },
   {
     id: 'asterix-park',
@@ -41,6 +44,7 @@ export const PARKS: Park[] = [
     parkName: 'Parc Asterix',
     showInResortSelection: true,
     showInParkFilter: true,
+    timezone: 'Europe/Paris',
   },
   {
     id: 'europa-park',
@@ -48,6 +52,7 @@ export const PARKS: Park[] = [
     parkName: 'Europa Park',
     showInResortSelection: true,
     showInParkFilter: true,
+    timezone: 'Europe/Berlin',
   },
   {
     id: 'rulantica',
@@ -55,6 +60,7 @@ export const PARKS: Park[] = [
     parkName: 'Rulantica',
     showInResortSelection: true,
     showInParkFilter: true,
+    timezone: 'Europe/Berlin',
   },
   {
     id: 'walibi-rhone-alpes',
@@ -62,6 +68,7 @@ export const PARKS: Park[] = [
     parkName: 'Walibi Rhône Alpes',
     showInResortSelection: true,
     showInParkFilter: true,
+    timezone: 'Europe/Paris',
   },
   {
     id: 'futuroscope',
@@ -69,6 +76,7 @@ export const PARKS: Park[] = [
     parkName: 'Futuroscope',
     showInResortSelection: true,
     showInParkFilter: true,
+    timezone: 'Europe/Paris',
   },
 ]
 
