@@ -85,7 +85,8 @@ export interface Attraction {
   parkZone: string
   interests: string[]
   heightRestriction: string
-  rcdbLink?: string
+  rcdbId?: string
+  wikipediaUrl?: string
   liveData: {
     standbyWait: number | null
     singleRiderWait: number | null

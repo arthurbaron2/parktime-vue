@@ -18,12 +18,12 @@ const id = computed(() => park.value?.id)
     class="flex gap-8 justify-between fixed items-center text-xs px-10 pt-3 pb-5 -bottom-0.5 left-0 right-0 bg-slate-900/50 backdrop-blur-sm"
   >
     <router-link
-      :to="`/${id}`"
-      :class="{ 'text-blue-400': isActive(`/${id}`) }"
+      :to="`/`"
+      :class="{ 'text-blue-400': isActive(`/`) }"
       class="flex flex-col items-center"
     >
-      <v-icon name="fa-home" class="size-6" />
-      <span class="mt-0.5">Home</span>
+      <v-icon name="fa-map-signs" class="size-6" />
+      <span class="mt-0.5">Parks</span>
     </router-link>
     <router-link
       :to="`/${id}/shows`"
@@ -32,6 +32,14 @@ const id = computed(() => park.value?.id)
     >
       <v-icon name="gi-party-hat" class="size-6" />
       <span class="mt-0.5">Shows</span>
+    </router-link>
+    <router-link
+      :to="`/${id}`"
+      :class="{ 'text-blue-400': isActive(`/${id}`) }"
+      class="flex flex-col items-center"
+    >
+      <v-icon name="fa-home" class="size-6" />
+      <span class="mt-0.5">Home</span>
     </router-link>
     <router-link
       :to="`/${id}/attractions`"

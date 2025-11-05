@@ -23,7 +23,7 @@ import {
   periodToChartPoints,
   waitTimesToChartPoints,
 } from '@/utils/attractionWaitTimeline'
-import { options } from './attractionWaitTimelineChart.config'
+import { getOptions } from './attractionWaitTimelineChart.config'
 import { getParkFromId } from '@/utils/park'
 
 const props = defineProps<{ attraction: Attraction }>()
@@ -47,12 +47,12 @@ const singleRiderWaitTimes = computed(() => {
 
 const closedPeriods = computed(() => {
   if (!waitTimeline.value) return []
-  return processClosedPeriodsFromDayData(waitTimeline.value)
+  return processClosedPeriodsFromDayData(waitTimeline.value, timezone.value)
 })
 
 const downPeriods = computed(() => {
   if (!waitTimeline.value) return []
-  return processDownPeriodsFromDayData(waitTimeline.value)
+  return processDownPeriodsFromDayData(waitTimeline.value, timezone.value)
 })
 
 const data = computed(() => {
@@ -110,6 +110,8 @@ const data = computed(() => {
   return { datasets }
 })
 
+const chartOptions = computed(() => getOptions(timezone.value))
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -134,7 +136,7 @@ ChartJS.register(
       </span>
     </div>
     <div v-if="data.datasets.length > 2" class="h-50">
-      <Line :data="data" :options="options" />
+      <Line :data="data" :options="chartOptions" />
     </div>
     <div v-else class="flex items-center justify-center my-8">No data available for today</div>
   </div>

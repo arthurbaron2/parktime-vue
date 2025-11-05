@@ -1,7 +1,7 @@
 import type { TooltipItem } from 'chart.js'
-import { formatTimeToFrench } from '@/utils/date'
+import { formatTime } from '@/utils/date'
 
-export const options = {
+export const getOptions = (timezone: string) => ({
   responsive: true,
   maintainAspectRatio: false,
   animation: {
@@ -80,9 +80,9 @@ export const options = {
       },
       callbacks: {
         title: function (context: TooltipItem<'line'>[]) {
-          if (context[0]?.parsed.x === null) return ''
+          if (!context[0]?.parsed?.x) return ''
           const date = new Date(context[0].parsed.x)
-          return formatTimeToFrench(date)
+          return formatTime(date, timezone)
         },
         label: function (context: TooltipItem<'line'>) {
           return `${context.dataset.label}: ${context.parsed.y} minutes`
@@ -90,4 +90,4 @@ export const options = {
       },
     },
   },
-}
+})

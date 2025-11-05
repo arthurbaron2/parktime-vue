@@ -32,6 +32,7 @@ import {
   FaBolt,
   FaExternalLinkAlt,
   FaLink,
+  FaMapSigns,
 } from 'oh-vue-icons/icons/fa'
 import { MdAttractions } from 'oh-vue-icons/icons/md'
 import { GiPartyHat } from 'oh-vue-icons/icons/gi'
@@ -61,6 +62,7 @@ addIcons(
   FaBolt,
   FaExternalLinkAlt,
   FaLink,
+  FaMapSigns,
 )
 
 import '../src/registerServiceWorker'

@@ -33,10 +33,19 @@ export const formatHoursFromMinutes = (minutes: number): string => {
   return `${hours}h${remainingMinutes.toString().padStart(2, '0')}`
 }
 
-export const formatTimeToFrench = (date: Date): string => {
-  return date.toLocaleString('fr-FR', {
+/**
+ * Formats time from a Date or ISO string, converting from UTC to the specified timezone.
+ * Assumes the input date is in UTC if it's a string.
+ */
+export const formatTime = (date: Date | string, timezone: string): string => {
+  // Parse string to Date (handles UTC automatically)
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+
+  const options: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Europe/Paris',
-  })
+    timeZone: timezone,
+  }
+
+  return dateObj.toLocaleString('fr-FR', options)
 }

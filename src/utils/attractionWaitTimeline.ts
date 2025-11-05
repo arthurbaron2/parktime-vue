@@ -1,5 +1,5 @@
 import type { AttractionEvent, DayAttractionWaitTimes } from '@/types/parktimeapi.types'
-import { formatTimeToFrench } from './date'
+import { formatTime } from './date'
 
 export interface TimePoint {
   time: string
@@ -20,23 +20,27 @@ const createTimelineEvent = (time: string, waitTime: number, type: EventType): T
   type,
 })
 
-const hasDataAtTime = (standbyData: { recordedAt: string }[], time: string): boolean =>
-  standbyData.some((wt) => formatTimeToFrench(new Date(wt.recordedAt)) === time)
+const hasDataAtTime = (
+  standbyData: { recordedAt: string }[],
+  time: string,
+  timezone: string,
+): boolean => standbyData.some((wt) => formatTime(wt.recordedAt, timezone) === time)
 
 const addEventsIfNoData = (
   events: AttractionEvent[],
   standbyData: { recordedAt: string }[],
   eventType: 'closed' | 'down',
   timelineEvents: TimelineEvent[],
+  timezone: string,
 ) => {
   events.forEach((event) => {
-    const startTime = formatTimeToFrench(new Date(event.start))
-    const endTime = formatTimeToFrench(new Date(event.end))
+    const startTime = formatTime(event.start, timezone)
+    const endTime = formatTime(event.end, timezone)
 
-    if (!hasDataAtTime(standbyData, startTime)) {
+    if (!hasDataAtTime(standbyData, startTime, timezone)) {
       timelineEvents.push(createTimelineEvent(startTime, 0, eventType))
     }
-    if (!hasDataAtTime(standbyData, endTime)) {
+    if (!hasDataAtTime(standbyData, endTime, timezone)) {
       timelineEvents.push(createTimelineEvent(endTime, 0, eventType))
     }
   })
@@ -92,6 +96,7 @@ const processTimelineFromData = ({
   closedEvents,
   downEvents,
   hasLastEvent = true,
+  timezone,
 }: {
   waitTimes: { recordedAt: string; waitTime: number }[]
   closedEvents: AttractionEvent[]
@@ -103,11 +108,7 @@ const processTimelineFromData = ({
 
   waitTimes.forEach((waitTime) => {
     timelineEvents.push(
-      createTimelineEvent(
-        formatTimeToFrench(new Date(waitTime.recordedAt)),
-        waitTime.waitTime,
-        'wait',
-      ),
+      createTimelineEvent(formatTime(waitTime.recordedAt, timezone), waitTime.waitTime, 'wait'),
     )
   })
 
@@ -117,14 +118,15 @@ const processTimelineFromData = ({
 
   if (lastEvent && hasLastEvent) {
     uniqueTimelineEvents.push(
-      createTimelineEvent(formatTimeToFrench(new Date()), lastEvent.waitTime, 'wait'),
+      createTimelineEvent(formatTime(new Date(), timezone), lastEvent.waitTime, 'wait'),
     )
   }
 
-  addEventsIfNoData(closedEvents, waitTimes, 'closed', uniqueTimelineEvents)
-  addEventsIfNoData(downEvents, waitTimes, 'down', uniqueTimelineEvents)
+  addEventsIfNoData(closedEvents, waitTimes, 'closed', uniqueTimelineEvents, timezone)
+  addEventsIfNoData(downEvents, waitTimes, 'down', uniqueTimelineEvents, timezone)
 
   const sortedEvents = sortEventsByTime(uniqueTimelineEvents)
+
   return processTimelineEvents(sortedEvents)
 }
 
@@ -156,14 +158,18 @@ export const processSingleRiderWaitTimesFromDayData = (
 
 export const processClosedPeriodsFromDayData = (
   dayData: DayAttractionWaitTimes,
+  timezone: string,
 ): AttractionEvent[] =>
   dayData.closedEvents.map((event) => ({
-    start: formatTimeToFrench(new Date(event.start)),
-    end: formatTimeToFrench(new Date(event.end)),
+    start: formatTime(event.start, timezone),
+    end: formatTime(event.end, timezone),
   }))
 
-export const processDownPeriodsFromDayData = (dayData: DayAttractionWaitTimes): AttractionEvent[] =>
+export const processDownPeriodsFromDayData = (
+  dayData: DayAttractionWaitTimes,
+  timezone: string,
+): AttractionEvent[] =>
   dayData.downEvents.map((event) => ({
-    start: formatTimeToFrench(new Date(event.start)),
-    end: formatTimeToFrench(new Date(event.end)),
+    start: formatTime(event.start, timezone),
+    end: formatTime(event.end, timezone),
   }))
